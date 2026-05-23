@@ -1,0 +1,152 @@
+import { useState, useCallback, useEffect } from 'react';
+import type { Settings } from './types';
+import { useAudioDetector } from './hooks/useAudioDetector';
+import { loadSettings, saveSettings } from './utils/storage';
+import { CounterDial } from './components/CounterDial';
+import { VolumeMeter } from './components/VolumeMeter';
+import { ControlBar } from './components/ControlBar';
+import { SettingsPanel } from './components/SettingsPanel';
+import { HistoryPanel } from './components/HistoryPanel';
+import { DebugPanel } from './components/DebugPanel';
+import './App.css';
+
+export default function App() {
+  const [settings, setSettings] = useState<Settings>(loadSettings);
+  const {
+    status,
+    count,
+    dbLevel,
+    baseline,
+    logs,
+    isFlashing,
+    startListening,
+    pause,
+    resume,
+    reset,
+    calibrate,
+    setSimulatedDb,
+  } = useAudioDetector(settings);
+
+  const [showSettings, setShowSettings] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [showDebug, setShowDebug] = useState(false);
+
+  const handleSettingsChange = useCallback((s: Settings) => {
+    setSettings(s);
+    saveSettings(s);
+  }, []);
+
+  const handleStart = useCallback(async () => {
+    try {
+      await startListening();
+    } catch { /* hook 已记录错误 */ }
+  }, [startListening]);
+
+  const handleCalibrate = useCallback(async () => {
+    await calibrate();
+  }, [calibrate]);
+
+  // 注册 Service Worker
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+  }, []);
+
+  const isRunning = status === 'listening' || status === 'paused';
+
+  return (
+    <div className="app">
+      <header className="app-header">
+        <h1>CountinD</h1>
+        <div className="header-status">
+          状态：<span className={`status-dot status-${status}`} />
+          {status === 'idle' && '未开始'}
+          {status === 'listening' && '监听中'}
+          {status === 'paused' && '已暂停'}
+          {status === 'finished' && '已完成'}
+        </div>
+      </header>
+
+      <main className="app-main">
+        {/* 计数器表盘 */}
+        <section className="section-dial">
+          <CounterDial count={count} target={settings.target} isFlashing={isFlashing} />
+        </section>
+
+        {/* 实时音量条 */}
+        <section className="section-volume">
+          <VolumeMeter
+            dbLevel={dbLevel}
+            threshold={settings.threshold}
+            baseline={baseline}
+          />
+        </section>
+
+        {/* 控制按钮 */}
+        <section className="section-controls">
+          <ControlBar
+            status={status}
+            onStart={handleStart}
+            onPause={pause}
+            onResume={resume}
+            onReset={reset}
+          />
+        </section>
+
+        {/* 展开面板 */}
+        <section className="section-panels">
+          <div className="panel-tabs">
+            <button
+              className={`panel-tab ${showSettings ? 'active' : ''}`}
+              onClick={() => setShowSettings(!showSettings)}
+            >
+              设置
+            </button>
+            <button
+              className={`panel-tab ${showHistory ? 'active' : ''}`}
+              onClick={() => setShowHistory(!showHistory)}
+            >
+              历史
+            </button>
+            <button
+              className={`panel-tab ${showDebug ? 'active' : ''}`}
+              onClick={() => setShowDebug(!showDebug)}
+            >
+              调试
+            </button>
+          </div>
+
+          {showSettings && (
+            <div className="panel-content">
+              <SettingsPanel
+                settings={settings}
+                baseline={baseline}
+                onChange={handleSettingsChange}
+                onCalibrate={handleCalibrate}
+                disabled={isRunning}
+              />
+            </div>
+          )}
+          {showHistory && (
+            <div className="panel-content">
+              <HistoryPanel />
+            </div>
+          )}
+          {showDebug && (
+            <div className="panel-content">
+              <DebugPanel
+                status={status}
+                dbLevel={dbLevel}
+                baseline={baseline}
+                count={count}
+                logs={logs}
+                onSimulate={setSimulatedDb}
+              />
+            </div>
+          )}
+        </section>
+      </main>
+    </div>
+  );
+}

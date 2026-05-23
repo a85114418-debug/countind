@@ -1,0 +1,59 @@
+.volume-meter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.vm-label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  min-width: 30px;
+}
+
+.vm-bar-track {
+  flex: 1;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.vm-bar-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, #00e5ff, #00b8d4);
+  border-radius: 6px;
+  transition: height 0.12s ease, background 0.15s;
+}
+
+.vm-bar-fill.over {
+  background: linear-gradient(to top, #ff1744, #ff5252);
+}
+
+.vm-threshold {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+}
+
+.vm-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  min-width: 70px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.vm-unit {
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.4);
+}
