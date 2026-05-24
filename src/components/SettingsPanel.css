@@ -221,3 +221,30 @@
   border-color: rgba(255, 255, 255, 0.25);
   color: rgba(255, 255, 255, 0.7);
 }
+
+.sp-voice-count {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.25);
+  margin-left: 6px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.sp-voice-refresh {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.sp-voice-refresh:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.7);
+}

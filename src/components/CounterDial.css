@@ -67,3 +67,33 @@
   color: rgba(255, 255, 255, 0.4);
   margin-top: 2px;
 }
+
+/* 平板 */
+@media (min-width: 600px) {
+  .counter-dial {
+    width: 260px;
+    height: 260px;
+  }
+  .dial-number { font-size: 76px; }
+  .dial-target { font-size: 17px; }
+}
+
+/* 桌面 */
+@media (min-width: 1024px) {
+  .counter-dial {
+    width: 300px;
+    height: 300px;
+  }
+  .dial-number { font-size: 88px; }
+  .dial-target { font-size: 18px; }
+}
+
+/* 小屏手机横屏 */
+@media (max-width: 599px) and (orientation: landscape) {
+  .counter-dial {
+    width: 160px;
+    height: 160px;
+  }
+  .dial-number { font-size: 48px; }
+  .dial-target { font-size: 13px; }
+}

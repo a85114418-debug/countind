@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import type { Settings } from '../types';
-import { getVoiceOptions, previewVoice, type VoiceOption } from '../utils/speech';
+import { getVoiceOptions, previewVoice, warmupSpeech, type VoiceOption } from '../utils/speech';
 import './SettingsPanel.css';
 
 interface Props {
@@ -21,10 +21,13 @@ const LANG_OPTIONS = [
   { value: 'en-US' as const, label: 'English' },
 ];
 
-function genderLabel(g: VoiceOption['gender']): string {
-  if (g === 'male') return '男';
-  if (g === 'female') return '女';
-  return '';
+function simplifyName(name: string): string {
+  return name
+    .replace(/Google\s+/i, '')
+    .replace(/\bdefault\b/i, '')
+    .replace(/male|female/i, '')
+    .replace(/\s+/g, ' ')
+    .trim() || name;
 }
 
 export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disabled }: Props) {
@@ -32,20 +35,37 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
   const [localTarget, setLocalTarget] = useState(String(settings.target));
   const [localInitial, setLocalInitial] = useState(String(settings.initialCount));
   const [voices, setVoices] = useState<VoiceOption[]>([]);
+  const [voicesLoading, setVoicesLoading] = useState(true);
 
   const refreshVoices = useCallback(() => {
-    setVoices(getVoiceOptions(settings.voiceLang));
+    setVoicesLoading(true);
+    const list = getVoiceOptions(settings.voiceLang);
+    setVoices(list);
+    setVoicesLoading(false);
   }, [settings.voiceLang]);
 
+  // 唤醒语音引擎 + 监听 voiceschanged
   useEffect(() => {
+    warmupSpeech();
     refreshVoices();
-    speechSynthesis.addEventListener('voiceschanged', refreshVoices);
-    return () => speechSynthesis.removeEventListener('voiceschanged', refreshVoices);
+    const onVoicesChanged = () => refreshVoices();
+    speechSynthesis.addEventListener('voiceschanged', onVoicesChanged);
+    return () => speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged);
   }, [refreshVoices]);
 
-  // 如果当前语音不在列表里，选第一个
+  // 切换语言后延迟刷新（等待 voiceschanged 或超时）
   useEffect(() => {
-    if (settings.voiceURI && voices.length > 0 && !voices.find((v) => v.voiceURI === settings.voiceURI)) {
+    refreshVoices();
+    const t = setTimeout(refreshVoices, 500);
+    return () => clearTimeout(t);
+  }, [settings.voiceLang, refreshVoices]);
+
+  // 当前语音不在列表中时自动选择第一个
+  useEffect(() => {
+    if (voices.length > 0 && settings.voiceURI && !voices.find((v) => v.voiceURI === settings.voiceURI)) {
+      onChange({ ...settings, voiceURI: voices[0].voiceURI });
+    }
+    if (voices.length > 0 && !settings.voiceURI) {
       onChange({ ...settings, voiceURI: voices[0].voiceURI });
     }
   }, [voices, settings, onChange]);
@@ -74,6 +94,22 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
   const maleVoices = voices.filter((v) => v.gender === 'male');
   const femaleVoices = voices.filter((v) => v.gender === 'female');
   const unknownVoices = voices.filter((v) => v.gender === 'unknown');
+
+  const renderVoiceRow = (v: VoiceOption) => (
+    <div
+      key={v.voiceURI}
+      className={`sp-voice-row ${settings.voiceURI === v.voiceURI ? 'active' : ''}`}
+      onClick={() => onChange({ ...settings, voiceURI: v.voiceURI })}
+    >
+      <span className="sp-voice-name">{simplifyName(v.name)}</span>
+      <button
+        className="sp-voice-preview"
+        onClick={(e) => { e.stopPropagation(); previewVoice(v.voiceURI, settings.voiceLang); }}
+      >
+        试听
+      </button>
+    </div>
+  );
 
   return (
     <div className="settings-panel">
@@ -127,7 +163,12 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
       </button>
 
       {/* === 语音报数 === */}
-      <div className="sp-section-title">语音报数</div>
+      <div className="sp-section-title">
+        <span>语音报数</span>
+        {voices.length > 0 && (
+          <span className="sp-voice-count">{voices.length} 个</span>
+        )}
+      </div>
 
       <label className="sp-field">
         <span>开启报数</span>
@@ -160,71 +201,32 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
         </select>
       </label>
 
-      {/* 语音选择 */}
-      {voices.length === 0 && (
-        <div className="sp-voice-empty">未检测到可用语音</div>
+      {voicesLoading && voices.length === 0 && (
+        <div className="sp-voice-empty">正在加载语音列表...</div>
+      )}
+      {!voicesLoading && voices.length === 0 && (
+        <div className="sp-voice-empty">
+          未检测到可用语音
+          <button className="sp-voice-refresh" onClick={refreshVoices}>刷新</button>
+        </div>
       )}
 
       {maleVoices.length > 0 && (
         <div className="sp-voice-group">
           <div className="sp-voice-group-label">男声</div>
-          {maleVoices.map((v) => (
-            <div
-              key={v.voiceURI}
-              className={`sp-voice-row ${settings.voiceURI === v.voiceURI ? 'active' : ''}`}
-              onClick={() => onChange({ ...settings, voiceURI: v.voiceURI })}
-            >
-              <span className="sp-voice-name">{v.name.replace(/male|Male/gi, '').replace(/^\s+|\s+$/g, '') || v.name}</span>
-              <button
-                className="sp-voice-preview"
-                onClick={(e) => { e.stopPropagation(); previewVoice(v.voiceURI, settings.voiceLang); }}
-              >
-                试听
-              </button>
-            </div>
-          ))}
+          {maleVoices.map(renderVoiceRow)}
         </div>
       )}
-
       {femaleVoices.length > 0 && (
         <div className="sp-voice-group">
           <div className="sp-voice-group-label">女声</div>
-          {femaleVoices.map((v) => (
-            <div
-              key={v.voiceURI}
-              className={`sp-voice-row ${settings.voiceURI === v.voiceURI ? 'active' : ''}`}
-              onClick={() => onChange({ ...settings, voiceURI: v.voiceURI })}
-            >
-              <span className="sp-voice-name">{v.name.replace(/female|Female/gi, '').replace(/^\s+|\s+$/g, '') || v.name}</span>
-              <button
-                className="sp-voice-preview"
-                onClick={(e) => { e.stopPropagation(); previewVoice(v.voiceURI, settings.voiceLang); }}
-              >
-                试听
-              </button>
-            </div>
-          ))}
+          {femaleVoices.map(renderVoiceRow)}
         </div>
       )}
-
       {unknownVoices.length > 0 && (
         <div className="sp-voice-group">
-          <div className="sp-voice-group-label">其他</div>
-          {unknownVoices.map((v) => (
-            <div
-              key={v.voiceURI}
-              className={`sp-voice-row ${settings.voiceURI === v.voiceURI ? 'active' : ''}`}
-              onClick={() => onChange({ ...settings, voiceURI: v.voiceURI })}
-            >
-              <span className="sp-voice-name">{v.name}</span>
-              <button
-                className="sp-voice-preview"
-                onClick={(e) => { e.stopPropagation(); previewVoice(v.voiceURI, settings.voiceLang); }}
-              >
-                试听
-              </button>
-            </div>
-          ))}
+          <div className="sp-voice-group-label">通用</div>
+          {unknownVoices.map(renderVoiceRow)}
         </div>
       )}
     </div>
