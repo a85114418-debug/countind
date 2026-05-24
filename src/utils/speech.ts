@@ -39,29 +39,25 @@ export function getVoiceOptions(langPrefix: string): VoiceOption[] {
   });
 }
 
-/** 播报数字（带防抖保护） */
-let speakTimer: ReturnType<typeof setTimeout> | null = null;
+/** 播报数字（立即播报，无延迟） */
 export function speakNumber(count: number, lang: string, voiceURI?: string): void {
-  if (speakTimer) clearTimeout(speakTimer);
-  speakTimer = setTimeout(() => {
-    speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(String(count));
-    utterance.lang = lang;
-    utterance.rate = 0.85;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-    if (voiceURI) {
-      const voices = speechSynthesis.getVoices();
-      const match = voices.find((v) => v.voiceURI === voiceURI);
-      if (match) utterance.voice = match;
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(String(count));
+  utterance.lang = lang;
+  utterance.rate = 0.85;
+  utterance.pitch = 1;
+  utterance.volume = 1;
+  if (voiceURI) {
+    const voices = speechSynthesis.getVoices();
+    const match = voices.find((v) => v.voiceURI === voiceURI);
+    if (match) utterance.voice = match;
+  }
+  utterance.onerror = (e) => {
+    if (e.error !== 'canceled' && e.error !== 'interrupted') {
+      console.warn('speakNumber error:', e.error);
     }
-    utterance.onerror = (e) => {
-      if (e.error !== 'canceled' && e.error !== 'interrupted') {
-        console.warn('speakNumber error:', e.error);
-      }
-    };
-    speechSynthesis.speak(utterance);
-  }, 60);
+  };
+  speechSynthesis.speak(utterance);
 }
 
 /** 试听语音 */
