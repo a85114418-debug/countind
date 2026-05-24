@@ -2,6 +2,7 @@ import { useRef, useState, useCallback, useEffect } from 'react';
 import type { AppStatus, LogEntry, Settings } from '../types';
 import { initAudio, getVolume, toDecibel, closeAudio } from '../utils/audio';
 import { saveRecord as persistRecord } from '../utils/storage';
+import { speakNumber } from '../utils/speech';
 
 /** 冷却时间（毫秒），防止同一声音被重复计数 */
 const COOLDOWN_MS = 500;
@@ -89,6 +90,12 @@ export function useAudioDetector(settings: Settings) {
       setCount(countRef.current);
       setIsFlashing(true);
       addLog(`触发! ${countRef.current} (音量: ${rawDb.toFixed(1)} dB)`);
+
+      // 语音报数
+      const { voiceEnabled, voiceLang, voiceURI } = settingsRef.current;
+      if (voiceEnabled) {
+        speakNumber(countRef.current, voiceLang, voiceURI || undefined);
+      }
 
       // 闪烁动画 300ms 后恢复
       setTimeout(() => setIsFlashing(false), 300);

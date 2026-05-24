@@ -75,3 +75,149 @@
   opacity: 0.3;
   cursor: not-allowed;
 }
+
+/* === 语音报数 === */
+.sp-section-title {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 18px 0 12px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* toggle switch */
+.sp-toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.sp-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.sp-toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.25s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sp-toggle-slider::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transition: transform 0.25s;
+}
+
+.sp-toggle input:checked + .sp-toggle-slider {
+  background: hsl(226, 61%, 35%);
+  border-color: hsl(226, 61%, 40%);
+}
+
+.sp-toggle input:checked + .sp-toggle-slider::before {
+  transform: translateX(20px);
+  background: #fff;
+}
+
+/* select */
+.sp-select {
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  min-width: 90px;
+}
+
+.sp-select:focus {
+  border-color: hsl(226, 61%, 50%);
+}
+
+.sp-select option {
+  background: #1a1d3a;
+  color: #fff;
+}
+
+/* voice groups */
+.sp-voice-empty {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.25);
+  padding: 6px 0;
+}
+
+.sp-voice-group {
+  margin-bottom: 8px;
+}
+
+.sp-voice-group-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+
+.sp-voice-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 2px;
+}
+
+.sp-voice-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.sp-voice-row.active {
+  border-color: hsl(226, 61%, 35%);
+  background: hsl(226, 61%, 10%);
+}
+
+.sp-voice-name {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.sp-voice-row.active .sp-voice-name {
+  color: hsl(226, 61%, 75%);
+}
+
+.sp-voice-preview {
+  padding: 3px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.sp-voice-preview:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.7);
+}

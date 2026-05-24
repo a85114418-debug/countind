@@ -19,6 +19,9 @@ export interface Settings {
   target: number;     // 目标计数
   initialCount: number; // 初始值
   visualEffect: VisualEffect; // 视觉特效
+  voiceEnabled: boolean; // 是否开启报数
+  voiceLang: 'zh-CN' | 'en-US'; // 报数语言
+  voiceURI: string; // 选择的语音 URI
 }
 
 /** 调试日志 */
