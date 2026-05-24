@@ -10,11 +10,15 @@ export interface CountRecord {
   target: number;
 }
 
+/** 视觉特效类型 */
+export type VisualEffect = 'none' | 'snow' | 'sakura' | 'rain';
+
 /** 用户设置 */
 export interface Settings {
   threshold: number;  // 触发阈值 (dB)
   target: number;     // 目标计数
   initialCount: number; // 初始值
+  visualEffect: VisualEffect; // 视觉特效
 }
 
 /** 调试日志 */

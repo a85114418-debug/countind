@@ -9,14 +9,17 @@
 .ctrl-btn {
   padding: 12px 28px;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
   letter-spacing: 1px;
-  transition: all 0.18s;
+  transition: all 0.2s;
   font-family: inherit;
   -webkit-tap-highlight-color: transparent;
+  /* liquid glass */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .ctrl-btn:active {
@@ -24,32 +27,37 @@
 }
 
 .btn-start {
-  background: linear-gradient(135deg, #00e5ff, #00b8d4);
-  color: #000;
-  box-shadow: 0 4px 14px rgba(0, 229, 255, 0.3);
+  background: linear-gradient(135deg, hsl(226, 61%, 50%), hsl(226, 61%, 30%));
+  color: #fff;
+  border: 1px solid hsl(226, 61%, 40%);
+  box-shadow:
+    0 4px 16px hsl(226, 61%, 25%),
+    inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .btn-start:hover {
-  box-shadow: 0 6px 20px rgba(0, 229, 255, 0.45);
+  box-shadow:
+    0 6px 24px hsl(226, 61%, 30%),
+    inset 0 1px 0 rgba(255,255,255,0.12);
 }
 
 .btn-pause {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .btn-pause:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .btn-reset {
   background: transparent;
-  color: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-reset:hover {
-  color: #ff5252;
-  border-color: rgba(255, 82, 82, 0.4);
+  color: hsl(0, 100%, 63%);
+  border-color: hsla(0, 100%, 63%, 0.4);
 }

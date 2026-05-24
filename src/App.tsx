@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import type { Settings } from './types';
+import type { Settings, VisualEffect } from './types';
 import { useAudioDetector } from './hooks/useAudioDetector';
 import { loadSettings, saveSettings } from './utils/storage';
 import { CounterDial } from './components/CounterDial';
@@ -8,7 +8,15 @@ import { ControlBar } from './components/ControlBar';
 import { SettingsPanel } from './components/SettingsPanel';
 import { HistoryPanel } from './components/HistoryPanel';
 import { DebugPanel } from './components/DebugPanel';
+import { ParticleEffect } from './components/ParticleEffect';
 import './App.css';
+
+const EFFECT_OPTIONS: { key: VisualEffect; label: string; icon: string }[] = [
+  { key: 'none', label: '关闭特效', icon: '✕' },
+  { key: 'snow', label: '飘雪', icon: '❄' },
+  { key: 'sakura', label: '樱花', icon: '🌸' },
+  { key: 'rain', label: '雨点', icon: '🌧' },
+];
 
 export default function App() {
   const [settings, setSettings] = useState<Settings>(loadSettings);
@@ -30,10 +38,20 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
+  const [effectMenuOpen, setEffectMenuOpen] = useState(false);
 
   const handleSettingsChange = useCallback((s: Settings) => {
     setSettings(s);
     saveSettings(s);
+  }, []);
+
+  const handleEffectChange = useCallback((v: VisualEffect) => {
+    setSettings((prev) => {
+      const next = { ...prev, visualEffect: v };
+      saveSettings(next);
+      return next;
+    });
+    setEffectMenuOpen(false);
   }, []);
 
   const handleStart = useCallback(async () => {
@@ -46,7 +64,6 @@ export default function App() {
     await calibrate();
   }, [calibrate]);
 
-  // 注册 Service Worker
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -54,9 +71,12 @@ export default function App() {
   }, []);
 
   const isRunning = status === 'listening' || status === 'paused';
+  const currentEffect = EFFECT_OPTIONS.find((e) => e.key === settings.visualEffect) || EFFECT_OPTIONS[0];
 
   return (
     <div className="app">
+      <ParticleEffect effect={settings.visualEffect} />
+
       <header className="app-header">
         <h1>CountinD</h1>
         <div className="header-status">
@@ -81,6 +101,34 @@ export default function App() {
             threshold={settings.threshold}
             baseline={baseline}
           />
+        </section>
+
+        {/* 特效切换按钮 */}
+        <section className="section-effect">
+          <div className="effect-toggle">
+            <button
+              className="effect-btn"
+              onClick={() => setEffectMenuOpen(!effectMenuOpen)}
+              title={currentEffect.label}
+            >
+              <span className="effect-icon">{currentEffect.icon}</span>
+              <span className="effect-label">{currentEffect.label}</span>
+            </button>
+            {effectMenuOpen && (
+              <div className="effect-menu">
+                {EFFECT_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.key}
+                    className={`effect-option ${settings.visualEffect === opt.key ? 'active' : ''}`}
+                    onClick={() => handleEffectChange(opt.key)}
+                  >
+                    <span className="effect-icon">{opt.icon}</span>
+                    <span>{opt.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </section>
 
         {/* 控制按钮 */}

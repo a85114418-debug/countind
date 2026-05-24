@@ -22,9 +22,9 @@
 .sp-field input {
   width: 80px;
   padding: 6px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
   color: #fff;
   font-size: 14px;
   text-align: center;
@@ -34,7 +34,7 @@
 }
 
 .sp-field input:focus {
-  border-color: #00e5ff;
+  border-color: hsl(226, 61%, 50%);
 }
 
 .sp-field input:disabled {
@@ -48,7 +48,7 @@
 }
 
 .sp-baseline strong {
-  color: #00e5ff;
+  color: hsl(226, 61%, 70%);
   font-weight: 600;
 }
 
@@ -56,8 +56,8 @@
   width: 100%;
   padding: 8px;
   margin-top: 6px;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
   background: transparent;
   color: rgba(255, 255, 255, 0.55);
   font-size: 13px;
@@ -67,8 +67,8 @@
 }
 
 .sp-calibrate-btn:hover:not(:disabled) {
-  border-color: #00e5ff;
-  color: #00e5ff;
+  border-color: hsl(226, 61%, 50%);
+  color: hsl(226, 61%, 70%);
 }
 
 .sp-calibrate-btn:disabled {

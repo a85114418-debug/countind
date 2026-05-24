@@ -2,7 +2,12 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 0;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.02);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 14px;
 }
 
 .vm-label {
@@ -14,10 +19,11 @@
 .vm-bar-track {
   flex: 1;
   height: 40px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
   position: relative;
   overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.04);
 }
 
 .vm-bar-fill {
@@ -25,13 +31,13 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to top, #00e5ff, #00b8d4);
-  border-radius: 6px;
+  background: linear-gradient(to top, hsl(226, 61%, 55%), hsl(226, 61%, 35%));
+  border-radius: 8px;
   transition: height 0.12s ease, background 0.15s;
 }
 
 .vm-bar-fill.over {
-  background: linear-gradient(to top, #ff1744, #ff5252);
+  background: linear-gradient(to top, hsl(0, 100%, 63%), hsl(0, 90%, 50%));
 }
 
 .vm-threshold {

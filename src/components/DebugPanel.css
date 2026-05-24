@@ -24,7 +24,7 @@
 }
 
 .dp-idle    { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
-.dp-listening { background: rgba(0,229,255,0.15); color: #00e5ff; }
+.dp-listening { background: hsla(226, 61%, 40%, 0.3); color: hsl(226, 61%, 70%); }
 .dp-paused  { background: rgba(255,193,7,0.15); color: #ffc107; }
 .dp-finished { background: rgba(76,175,80,0.15); color: #4caf50; }
 
@@ -56,11 +56,11 @@
 .dp-slider {
   flex: 1;
   min-width: 80px;
-  accent-color: #00e5ff;
+  accent-color: hsl(226, 61%, 50%);
 }
 
 .dp-sim-val {
-  color: #00e5ff;
+  color: hsl(226, 61%, 70%);
   font-weight: 600;
   min-width: 42px;
   font-size: 12px;
@@ -76,8 +76,9 @@
   max-height: 160px;
   overflow-y: auto;
   background: rgba(0, 0, 0, 0.25);
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 6px;
+  border: 1px solid rgba(255,255,255,0.04);
 }
 
 .dp-no-logs {
@@ -90,7 +91,7 @@
 .dp-log-item {
   font-size: 11px;
   padding: 3px 4px;
-  border-radius: 3px;
+  border-radius: 4px;
   font-family: 'Courier New', monospace;
   word-break: break-all;
 }
@@ -102,4 +103,4 @@
 
 .dp-log-info { color: rgba(255, 255, 255, 0.55); }
 .dp-log-warn { color: #ffc107; }
-.dp-log-error { color: #ff5252; }
+.dp-log-error { color: hsl(0, 100%, 63%); }

@@ -21,16 +21,19 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 10px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.03);
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   margin-bottom: 6px;
   font-size: 14px;
 }
 
 .hp-count {
   font-weight: 700;
-  color: #00e5ff;
+  color: hsl(226, 61%, 70%);
   font-size: 18px;
   min-width: 32px;
 }
