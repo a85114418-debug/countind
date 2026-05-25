@@ -4,8 +4,6 @@ import { initAudio, getVolume, toDecibel, closeAudio } from '../utils/audio';
 import { saveRecord as persistRecord } from '../utils/storage';
 import { speakNumber } from '../utils/speech';
 
-/** 冷却时间（毫秒），防止同一声音被重复计数 */
-const COOLDOWN_MS = 1000;
 /** 噪音校准采样时长（毫秒） */
 const CALIBRATE_MS = 2000;
 /** 音量采样间隔（毫秒），约 50ms 对应 20fps */
@@ -118,7 +116,7 @@ export function useAudioDetector(settings: Settings) {
       // 冷却期结束后恢复检测
       setTimeout(() => {
         cooldownRef.current = false;
-      }, COOLDOWN_MS);
+      }, settingsRef.current.cooldownMs);
     }
 
     timerRef.current = window.setTimeout(tick, SAMPLE_INTERVAL);

@@ -12,7 +12,7 @@ export function loadSettings(): Settings {
     const raw = localStorage.getItem(KEYS.settings);
     if (raw) return JSON.parse(raw) as Settings;
   } catch { /* 数据损坏时回退默认值 */ }
-  return { threshold: 30, target: 10, initialCount: 0, visualEffect: 'none', voiceEnabled: false, voiceLang: 'zh-CN', voiceURI: '' };
+  return { threshold: 30, target: 10, initialCount: 0, visualEffect: 'none', voiceEnabled: false, voiceLang: 'zh-CN', voiceURI: '', cooldownMs: 1000 };
 }
 
 /** 保存用户设置到 localStorage */

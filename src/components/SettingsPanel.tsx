@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import type { Settings } from '../types';
-import { getVoiceOptions, previewVoice, warmupSpeech, type VoiceOption } from '../utils/speech';
+import { getVoiceOptions, previewVoice, warmupSpeech, getTimbreLabel, type VoiceOption } from '../utils/speech';
 import './SettingsPanel.css';
 
 interface Props {
@@ -24,6 +24,7 @@ const LANG_OPTIONS = [
 function simplifyName(name: string): string {
   return name
     .replace(/Google\s+/i, '')
+    .replace(/Microsoft\s+/i, '')
     .replace(/\bdefault\b/i, '')
     .replace(/male|female/i, '')
     .replace(/\s+/g, ' ')
@@ -34,6 +35,7 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
   const [localThreshold, setLocalThreshold] = useState(String(settings.threshold));
   const [localTarget, setLocalTarget] = useState(String(settings.target));
   const [localInitial, setLocalInitial] = useState(String(settings.initialCount));
+  const [localCooldown, setLocalCooldown] = useState(String(settings.cooldownMs));
   const [voices, setVoices] = useState<VoiceOption[]>([]);
   const [voicesLoading, setVoicesLoading] = useState(true);
 
@@ -50,7 +52,6 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
     speechSynthesis.addEventListener('voiceschanged', onVoicesChanged);
     warmupSpeech();
     refreshVoices();
-    // 手机端 voiceschanged 可能不触发，轮询兜底
     const t1 = setTimeout(refreshVoices, 300);
     const t2 = setTimeout(refreshVoices, 800);
     return () => {
@@ -60,12 +61,29 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
     };
   }, [refreshVoices]);
 
-  // 切换语言后延迟刷新（等待 voiceschanged 或超时）
+  // 切换语言后延迟刷新
   useEffect(() => {
     refreshVoices();
     const t = setTimeout(refreshVoices, 500);
     return () => clearTimeout(t);
   }, [settings.voiceLang, refreshVoices]);
+
+  // 同步外部 settings 变化
+  useEffect(() => {
+    setLocalThreshold(String(settings.threshold));
+  }, [settings.threshold]);
+
+  useEffect(() => {
+    setLocalTarget(String(settings.target));
+  }, [settings.target]);
+
+  useEffect(() => {
+    setLocalInitial(String(settings.initialCount));
+  }, [settings.initialCount]);
+
+  useEffect(() => {
+    setLocalCooldown(String(settings.cooldownMs));
+  }, [settings.cooldownMs]);
 
   // 当前语音不在列表中时自动选择第一个
   useEffect(() => {
@@ -98,9 +116,15 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
     onChange({ ...settings, initialCount: num });
   }, [localInitial, settings, onChange]);
 
+  const handleCooldownBlur = useCallback(() => {
+    const cleaned = stripLeadingZeros(localCooldown);
+    const num = Math.max(200, Math.min(5000, Number(cleaned) || 1000));
+    setLocalCooldown(String(num));
+    onChange({ ...settings, cooldownMs: num });
+  }, [localCooldown, settings, onChange]);
+
   const maleVoices = voices.filter((v) => v.gender === 'male');
   const femaleVoices = voices.filter((v) => v.gender === 'female');
-  const unknownVoices = voices.filter((v) => v.gender === 'unknown');
 
   const renderVoiceRow = (v: VoiceOption) => (
     <div
@@ -108,7 +132,10 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
       className={`sp-voice-row ${settings.voiceURI === v.voiceURI ? 'active' : ''}`}
       onClick={() => onChange({ ...settings, voiceURI: v.voiceURI })}
     >
-      <span className="sp-voice-name">{simplifyName(v.name)}</span>
+      <div className="sp-voice-info">
+        <span className="sp-voice-name">{simplifyName(v.name)}</span>
+        <span className={`sp-voice-timbre ${v.timbre}`}>{getTimbreLabel(v.timbre)}</span>
+      </div>
       <button
         className="sp-voice-preview"
         onClick={(e) => { e.stopPropagation(); previewVoice(v.voiceURI, settings.voiceLang); }}
@@ -157,6 +184,19 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
           value={localInitial}
           onChange={(e) => setLocalInitial(e.target.value)}
           onBlur={handleInitialBlur}
+          disabled={disabled}
+        />
+      </label>
+
+      <label className="sp-field">
+        <span>计数间隔 (ms)</span>
+        <input
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          value={localCooldown}
+          onChange={(e) => setLocalCooldown(e.target.value)}
+          onBlur={handleCooldownBlur}
           disabled={disabled}
         />
       </label>
@@ -228,12 +268,6 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
         <div className="sp-voice-group">
           <div className="sp-voice-group-label">女声</div>
           {femaleVoices.map(renderVoiceRow)}
-        </div>
-      )}
-      {unknownVoices.length > 0 && (
-        <div className="sp-voice-group">
-          <div className="sp-voice-group-label">通用</div>
-          {unknownVoices.map(renderVoiceRow)}
         </div>
       )}
     </div>

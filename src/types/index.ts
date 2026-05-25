@@ -22,6 +22,7 @@ export interface Settings {
   voiceEnabled: boolean; // 是否开启报数
   voiceLang: 'zh-CN' | 'en-US'; // 报数语言
   voiceURI: string; // 选择的语音 URI
+  cooldownMs: number; // 计数最小间隔 (ms)
 }
 
 /** 调试日志 */
