@@ -179,12 +179,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 10px;
-  border-radius: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
   border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.2s;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .sp-voice-row:hover {
@@ -197,7 +201,7 @@
 }
 
 .sp-voice-name {
-  font-size: 12px;
+  font-size: 13px;
   color: rgba(255, 255, 255, 0.65);
 }
 
@@ -206,15 +210,17 @@
 }
 
 .sp-voice-preview {
-  padding: 3px 10px;
+  padding: 6px 14px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
+  border-radius: 12px;
   background: transparent;
   color: rgba(255, 255, 255, 0.4);
-  font-size: 11px;
+  font-size: 12px;
   cursor: pointer;
   font-family: inherit;
   transition: all 0.2s;
+  min-height: 34px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .sp-voice-preview:hover {

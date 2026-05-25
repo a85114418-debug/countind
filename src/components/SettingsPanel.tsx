@@ -44,13 +44,20 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
     setVoicesLoading(false);
   }, [settings.voiceLang]);
 
-  // 唤醒语音引擎 + 监听 voiceschanged
+  // 唤醒语音引擎 + 监听 voiceschanged（先注册监听再预热，避免竞态）
   useEffect(() => {
-    warmupSpeech();
-    refreshVoices();
     const onVoicesChanged = () => refreshVoices();
     speechSynthesis.addEventListener('voiceschanged', onVoicesChanged);
-    return () => speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged);
+    warmupSpeech();
+    refreshVoices();
+    // 手机端 voiceschanged 可能不触发，轮询兜底
+    const t1 = setTimeout(refreshVoices, 300);
+    const t2 = setTimeout(refreshVoices, 800);
+    return () => {
+      speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged);
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
   }, [refreshVoices]);
 
   // 切换语言后延迟刷新（等待 voiceschanged 或超时）
