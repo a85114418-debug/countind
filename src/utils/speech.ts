@@ -1,6 +1,5 @@
 /**
  * 语音播报工具 — Web Speech API 封装
- * 解决移动端语音列表异步加载和试听失效问题
  * 中英文各精选 2 男 2 女（一细一粗），共 4 个音色
  */
 
@@ -12,6 +11,14 @@ export interface VoiceOption {
   voiceURI: string;
 }
 
+/* ---------- 性别识别关键词 ---------- */
+const MALE_NAMES = /\b(male|男|boy|man|guy|gentleman|daniel|david|tom\b|james|michael|alex|fred|henry|william|george|mark|john|paul|peter|robert|steven|brian|chris|kevin|andrew|scott|eric|jason|matthew|ryan|adam|patrick|samuel|nathan|justin|brandon|aaron|gary|larry|bruce|ralph|arthur|ralf|li-mu|sin-ji|xiao\s*yi|yixi|kangkang|yunyang|yunjian|yunfeng|yunxi|yunxiang)\b/i;
+const FEMALE_NAMES = /\b(female|女|girl|woman|lady|madam|samantha|susan|karen|lisa|mary|zira|catherine|victoria|moira|fiona|alice|sarah|emma|olivia|mia|charlotte|amelia|harper|evelyn|abigail|emily|elizabeth|sofia|ella|scarlett|grace|chloe|penelope|layla|riley|zoe|nora|lily|hannah|lillian|aubrey|ellie|stella|natalie|hazel|violet|aurora|savannah|audrey|brooklyn|bella|claire|skylar|kathy|xiaoxiao|ya\s*ya|yaya|tingting|meijia|mei-jia)\b/i;
+
+/* ---------- 音色粗细关键词 ---------- */
+const THIN_PATTERN = /\b(xiao|yi\b|tong|qian|girl|young|high|thin|light|bright|soprano|zira)\b/i;
+const THICK_PATTERN = /\b(kang|yun|gang|feng|jian|tingting|deep|low|bass|thick|heavy|dark|rich|mature)\b/i;
+
 /** 唤醒语音引擎，触发移动端语音列表加载 */
 export function warmupSpeech(): void {
   const u = new SpeechSynthesisUtterance('');
@@ -21,78 +28,72 @@ export function warmupSpeech(): void {
   speechSynthesis.speak(u);
 }
 
-/** 判断音色细/粗 */
+function classifyGender(name: string): 'male' | 'female' {
+  if (MALE_NAMES.test(name)) return 'male';
+  if (FEMALE_NAMES.test(name)) return 'female';
+  return 'male';
+}
+
 function classifyTimbre(name: string, gender: 'male' | 'female'): 'thin' | 'thick' {
-  const n = name.toLowerCase();
-  // 细音色关键词（年轻、纤细、高音）
-  if (/xiao|yi\b|tong|qian|girl|young|high|thin|light|bright/i.test(n)) return 'thin';
-  // 粗音色关键词（成熟、低沉、浑厚）
-  if (/kang|yun|gang|feng|jian|tingting|deep|low|bass|thick|heavy|dark|rich/i.test(n)) return 'thick';
+  if (THIN_PATTERN.test(name)) return 'thin';
+  if (THICK_PATTERN.test(name)) return 'thick';
   return gender === 'female' ? 'thin' : 'thick';
 }
 
-const LANG_PREFIX: Record<string, string> = {
-  'zh-CN': 'zh',
-  'en-US': 'en',
-};
+const LANG_PREFIX: Record<string, string> = { 'zh-CN': 'zh', 'en-US': 'en' };
 
-/** 获取精选语音列表（每性别 2 个，一细一粗） */
+/** 获取精选语音列表（每性别最多 2 个，一细一粗） */
 export function getVoiceOptions(lang: string): VoiceOption[] {
   const allVoices = speechSynthesis.getVoices();
   const prefix = LANG_PREFIX[lang] || lang;
   const filtered = allVoices.filter((v) => v.lang.startsWith(prefix));
 
-  const byGender: Record<string, SpeechSynthesisVoice[]> = { male: [], female: [] };
+  const byGender: Record<'male' | 'female', SpeechSynthesisVoice[]> = { male: [], female: [] };
   for (const v of filtered) {
-    const n = v.name.toLowerCase();
-    if (/male|男|xiao yi|yixi|kangkang|yunyang|yunjian|yunfeng|yunxi/i.test(n)) {
-      byGender.male.push(v);
-    } else if (/female|女|xiaoxiao|ya\s*ya|yaya|tingting|meijia|sin-ji/i.test(n)) {
-      byGender.female.push(v);
-    } else if (/xiao|tong|girl|woman|lady|madam/i.test(n)) {
-      byGender.female.push(v);
-    } else {
-      byGender.male.push(v);
-    }
+    byGender[classifyGender(v.name)].push(v);
   }
 
   const result: VoiceOption[] = [];
-
   for (const gender of ['male', 'female'] as const) {
-    const list = byGender[gender];
-    // 去重（按 voiceURI）
     const seen = new Set<string>();
-    const deduped = list.filter((v) => {
+    const deduped = byGender[gender].filter((v) => {
       if (seen.has(v.voiceURI)) return false;
       seen.add(v.voiceURI);
       return true;
     });
+    if (deduped.length === 0) continue;
 
-    // 分细/粗两组
-    const thin = deduped.filter((v) => classifyTimbre(v.name, gender) === 'thin');
-    const thick = deduped.filter((v) => classifyTimbre(v.name, gender) === 'thick');
+    // 收录语音并按粗细排序：细的排前面、粗的排后面
+    const scored = deduped.map((v) => ({
+      v,
+      timbre: classifyTimbre(v.name, gender),
+    }));
+    const thinPick = scored.find((s) => s.timbre === 'thin');
+    const thickPick = scored.find((s) => s.timbre === 'thick');
 
-    // 每组取第一个，不够则从另一组补
-    const pickThin = thin[0] || thick[0] || deduped[0];
-    const pickThick = thick[0] || thin[1] || thin[0] || deduped[1] || deduped[0];
-
-    if (pickThin && pickThin.voiceURI !== pickThick?.voiceURI) {
+    const added = new Set<string>();
+    const push = (item: typeof thinPick) => {
+      if (!item || added.has(item.v.voiceURI)) return;
+      added.add(item.v.voiceURI);
       result.push({
-        name: pickThin.name,
-        lang: pickThin.lang,
+        name: item.v.name,
+        lang: item.v.lang,
         gender,
-        timbre: 'thin',
-        voiceURI: pickThin.voiceURI,
+        timbre: item.timbre,
+        voiceURI: item.v.voiceURI,
       });
+    };
+
+    push(thinPick);
+    push(thickPick);
+    // 若某类缺失，尝试从未收录的里面补一个不同的
+    if (!thickPick) {
+      const spare = scored.find((s) => s.timbre === 'thin' && !added.has(s.v.voiceURI));
+      if (spare) push({ v: spare.v, timbre: 'thick' });
     }
-    if (pickThick && pickThick.voiceURI !== pickThin?.voiceURI) {
-      result.push({
-        name: pickThick.name,
-        lang: pickThick.lang,
-        gender,
-        timbre: 'thick',
-        voiceURI: pickThick.voiceURI,
-      });
+    if (!thinPick) {
+      const spare = scored.find((s) => s.timbre === 'thick' && !added.has(s.v.voiceURI));
+      if (spare) push({ v: spare.v, timbre: 'thin' });
     }
   }
 
@@ -105,30 +106,20 @@ export function getTimbreLabel(t: 'thin' | 'thick'): string {
   return TIMBRE_LABEL[t];
 }
 
-/** 播报数字（快速报数） */
+/** 播报数字 */
 export function speakNumber(count: number, lang: string, voiceURI?: string): void {
-  speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(String(count));
   utterance.lang = lang;
   utterance.rate = 1.2;
   utterance.pitch = 1;
   utterance.volume = 1;
-  if (voiceURI) {
-    const voices = speechSynthesis.getVoices();
-    const match = voices.find((v) => v.voiceURI === voiceURI);
-    if (match) utterance.voice = match;
-  }
-  utterance.onerror = (e) => {
-    if (e.error !== 'canceled' && e.error !== 'interrupted') {
-      console.warn('speakNumber error:', e.error);
-    }
-  };
+  if (voiceURI) applyVoice(utterance, voiceURI);
+  speechSynthesis.cancel();
   speechSynthesis.speak(utterance);
 }
 
 /** 试听语音 */
 export function previewVoice(voiceURI: string, lang: string): void {
-  speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(
     lang.startsWith('zh') ? '你好 这是语音测试' : 'Hello voice test'
   );
@@ -136,21 +127,23 @@ export function previewVoice(voiceURI: string, lang: string): void {
   utterance.rate = 1.2;
   utterance.pitch = 1;
   utterance.volume = 1;
+  if (voiceURI) applyVoice(utterance, voiceURI);
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
+}
+
+/** 将指定 voice 绑定到 utterance，URI 匹配失败时降级按名称查找 */
+function applyVoice(utterance: SpeechSynthesisUtterance, voiceURI: string): void {
   const voices = speechSynthesis.getVoices();
-  const match = voices.find((v) => v.voiceURI === voiceURI);
-  if (match) utterance.voice = match;
-
-  utterance.onerror = (e) => {
-    console.warn('previewVoice error:', e.error);
-    if (e.error !== 'canceled' && e.error !== 'interrupted') {
-      const fallback = new SpeechSynthesisUtterance(
-        lang.startsWith('zh') ? '你好 这是语音测试' : 'Hello voice test'
+  if (voices.length === 0) return;
+  let match = voices.find((v) => v.voiceURI === voiceURI);
+  if (!match) {
+    try {
+      const decoded = decodeURIComponent(voiceURI).toLowerCase();
+      match = voices.find(
+        (v) => v.name.toLowerCase().includes(decoded) || decoded.includes(v.name.toLowerCase())
       );
-      fallback.lang = lang;
-      fallback.rate = 1.2;
-      speechSynthesis.speak(fallback);
-    }
-  };
-
-  setTimeout(() => speechSynthesis.speak(utterance), 50);
+    } catch { /* voiceURI 不是合法 URI 编码，跳过名称回退 */ }
+  }
+  if (match) utterance.voice = match;
 }
