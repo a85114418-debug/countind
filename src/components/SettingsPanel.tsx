@@ -123,9 +123,6 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
     onChange({ ...settings, cooldownMs: num });
   }, [localCooldown, settings, onChange]);
 
-  const maleVoices = voices.filter((v) => v.gender === 'male');
-  const femaleVoices = voices.filter((v) => v.gender === 'female');
-
   const renderVoiceRow = (v: VoiceOption) => (
     <div
       key={v.voiceURI}
@@ -258,16 +255,9 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
         </div>
       )}
 
-      {maleVoices.length > 0 && (
+      {voices.length > 0 && (
         <div className="sp-voice-group">
-          <div className="sp-voice-group-label">男声</div>
-          {maleVoices.map(renderVoiceRow)}
-        </div>
-      )}
-      {femaleVoices.length > 0 && (
-        <div className="sp-voice-group">
-          <div className="sp-voice-group-label">女声</div>
-          {femaleVoices.map(renderVoiceRow)}
+          {voices.map(renderVoiceRow)}
         </div>
       )}
     </div>
