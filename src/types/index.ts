@@ -8,6 +8,7 @@ export interface CountRecord {
   timestamp: number;
   threshold: number;
   target: number;
+  note?: string;
 }
 
 /** 视觉特效类型 */

@@ -38,6 +38,23 @@ export function saveRecord(record: CountRecord): void {
   localStorage.setItem(KEYS.records, JSON.stringify(records));
 }
 
+/** 删除指定 ID 的记录 */
+export function deleteRecord(id: string): void {
+  const records = loadRecords();
+  const filtered = records.filter((r) => r.id !== id);
+  localStorage.setItem(KEYS.records, JSON.stringify(filtered));
+}
+
+/** 更新指定记录的批注 */
+export function updateRecordNote(id: string, note: string): void {
+  const records = loadRecords();
+  const target = records.find((r) => r.id === id);
+  if (target) {
+    target.note = note || undefined;
+    localStorage.setItem(KEYS.records, JSON.stringify(records));
+  }
+}
+
 /** 加载调试日志 */
 export function loadLogs(): LogEntry[] {
   try {
