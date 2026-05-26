@@ -1,3 +1,14 @@
+/* === Google 彩虹色彩变量 === */
+:root {
+  --g-blue: #4285F4;
+  --g-red: #EA4335;
+  --g-yellow: #FBBC05;
+  --g-green: #34A853;
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-hover: rgba(255, 255, 255, 0.08);
+}
+
 /* === 全局重置 === */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -9,22 +20,55 @@ html, body, #root {
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
     "Microsoft YaHei", sans-serif;
-  background: #06081a;
+  background: #0a0a14;
   color: #fff;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* 液态玻璃全局背景 */
+/* === 动态彩虹光晕背景 === */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(ellipse at 50% 0%, hsl(226, 61%, 16%) 0%, transparent 60%),
-    radial-gradient(ellipse at 20% 80%, hsl(226, 61%, 12%) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, hsl(226, 61%, 10%) 0%, transparent 50%),
-    #06081a;
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(66,133,244,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 80% 15%, rgba(234,67,53,0.15) 0%, transparent 55%),
+    radial-gradient(ellipse 75% 55% at 50% 60%, rgba(251,188,5,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 15% 80%, rgba(52,168,83,0.15) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 45% at 85% 85%, rgba(66,133,244,0.13) 0%, transparent 55%),
+    #0a0a14;
+  animation: bg-shift 20s ease-in-out infinite;
+}
+
+@keyframes bg-shift {
+  0%, 100% {
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(66,133,244,0.18) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 80% 15%, rgba(234,67,53,0.15) 0%, transparent 55%),
+      radial-gradient(ellipse 75% 55% at 50% 60%, rgba(251,188,5,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 15% 80%, rgba(52,168,83,0.15) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 45% at 85% 85%, rgba(66,133,244,0.13) 0%, transparent 55%),
+      #0a0a14;
+  }
+  33% {
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 20%, rgba(234,67,53,0.16) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 30% 10%, rgba(66,133,244,0.17) 0%, transparent 55%),
+      radial-gradient(ellipse 75% 55% at 60% 70%, rgba(52,168,83,0.14) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 80% 40%, rgba(251,188,5,0.13) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 45% at 10% 60%, rgba(234,67,53,0.12) 0%, transparent 55%),
+      #0a0a14;
+  }
+  66% {
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 80%, rgba(52,168,83,0.16) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 15% 50%, rgba(251,188,5,0.15) 0%, transparent 55%),
+      radial-gradient(ellipse 75% 55% at 80% 30%, rgba(66,133,244,0.14) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 40% 70%, rgba(234,67,53,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 45% at 90% 20%, rgba(52,168,83,0.13) 0%, transparent 55%),
+      #0a0a14;
+  }
 }
 
 /* === App 布局（移动端默认）=== */
@@ -45,13 +89,24 @@ body::before {
   position: relative;
 }
 
+/* Google 彩虹渐变标题 */
 .app-header h1 {
   font-size: 20px;
   font-weight: 800;
   letter-spacing: 5px;
-  color: hsl(226, 61%, 70%);
-  text-shadow: 0 0 12px hsl(226, 61%, 30%);
+  background: linear-gradient(135deg, #4285F4, #EA4335, #FBBC05, #34A853, #4285F4);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: title-rainbow 6s linear infinite;
   margin-bottom: 4px;
+  filter: drop-shadow(0 0 8px rgba(66,133,244,0.3));
+}
+
+@keyframes title-rainbow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
 }
 
 .header-status {
@@ -69,9 +124,14 @@ body::before {
 }
 
 .status-idle       { background: rgba(255,255,255,0.3); }
-.status-listening  { background: hsl(226, 61%, 70%); box-shadow: 0 0 6px hsl(226, 61%, 30%); }
-.status-paused     { background: #ffc107; box-shadow: 0 0 6px rgba(255,193,7,0.6); }
-.status-finished   { background: #4caf50; box-shadow: 0 0 6px rgba(76,175,80,0.6); }
+.status-listening  { background: var(--g-blue); box-shadow: 0 0 8px rgba(66,133,244,0.6); animation: dot-pulse 1.5s ease-in-out infinite; }
+.status-paused     { background: var(--g-yellow); box-shadow: 0 0 8px rgba(251,188,5,0.6); }
+.status-finished   { background: var(--g-green); box-shadow: 0 0 8px rgba(52,168,83,0.6); }
+
+@keyframes dot-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(66,133,244,0.4); }
+  50% { box-shadow: 0 0 14px rgba(66,133,244,0.8); }
+}
 
 .app-main { flex: 1; }
 
@@ -98,18 +158,19 @@ body::before {
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 20px;
   background: rgba(255,255,255,0.04);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   color: rgba(255,255,255,0.6);
   font-size: 12px;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.25s;
+  transition: all 0.3s;
 }
 
 .effect-btn:hover {
   border-color: rgba(255,255,255,0.2);
   background: rgba(255,255,255,0.08);
+  box-shadow: 0 0 20px rgba(66,133,244,0.1);
 }
 
 .effect-icon { font-size: 15px; }
@@ -123,12 +184,13 @@ body::before {
   display: flex;
   gap: 4px;
   padding: 6px;
-  background: rgba(20,22,44,0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(14,14,28,0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 14px;
   z-index: 100;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 
 .effect-option {
@@ -149,14 +211,15 @@ body::before {
 }
 
 .effect-option.active {
-  border-color: hsl(226, 61%, 40%);
-  background: hsl(226, 61%, 16%);
+  border-color: rgba(66,133,244,0.5);
+  background: rgba(66,133,244,0.12);
   color: #fff;
+  box-shadow: 0 0 12px rgba(66,133,244,0.15);
 }
 
 .effect-option:hover:not(.active) {
-  background: rgba(255,255,255,0.05);
-  color: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85);
 }
 
 .effect-option .effect-icon { font-size: 18px; }
@@ -179,24 +242,42 @@ body::before {
   font-family: inherit;
   letter-spacing: 2px;
   border-bottom: 2px solid transparent;
-  transition: all 0.2s;
+  transition: all 0.3s;
   -webkit-tap-highlight-color: transparent;
 }
 
-.panel-tab.active,
-.panel-tab:hover {
-  color: hsl(226, 61%, 70%);
+.panel-tab:nth-child(1).active,
+.panel-tab:nth-child(1):hover {
+  color: var(--g-blue);
+}
+.panel-tab:nth-child(1).active {
+  border-bottom-color: var(--g-blue);
+  text-shadow: 0 0 8px rgba(66,133,244,0.4);
 }
 
-.panel-tab.active {
-  border-bottom-color: hsl(226, 61%, 50%);
+.panel-tab:nth-child(2).active,
+.panel-tab:nth-child(2):hover {
+  color: var(--g-red);
+}
+.panel-tab:nth-child(2).active {
+  border-bottom-color: var(--g-red);
+  text-shadow: 0 0 8px rgba(234,67,53,0.4);
+}
+
+.panel-tab:nth-child(3).active,
+.panel-tab:nth-child(3):hover {
+  color: var(--g-yellow);
+}
+.panel-tab:nth-child(3).active {
+  border-bottom-color: var(--g-yellow);
+  text-shadow: 0 0 8px rgba(251,188,5,0.4);
 }
 
 .panel-content {
-  background: rgba(255,255,255,0.02);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.06);
   border-radius: 14px;
   padding: 12px;
   max-height: 50vh;
