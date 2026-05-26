@@ -9,6 +9,49 @@
   --glass-hover: rgba(255, 255, 255, 0.08);
 }
 
+/* === 横屏遮罩：强制竖屏使用 === */
+.rotate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #0a0a14;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.rotate-icon {
+  font-size: 56px;
+  animation: rotate-hint 2s ease-in-out infinite;
+}
+
+@keyframes rotate-hint {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(90deg); }
+}
+
+.rotate-text {
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #4285F4, #EA4335, #FBBC05, #34A853);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: title-rainbow 6s linear infinite;
+  letter-spacing: 4px;
+}
+
+.rotate-sub {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 1px;
+}
+
 /* === 全局重置 === */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 

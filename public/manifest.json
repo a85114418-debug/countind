@@ -4,7 +4,7 @@
   "description": "声控计数器 - 检测环境音量并自动计数",
   "start_url": ".",
   "display": "standalone",
-  "orientation": "any",
+  "orientation": "portrait",
   "background_color": "#06081a",
   "theme_color": "#06081a",
   "icons": [

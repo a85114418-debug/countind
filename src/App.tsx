@@ -20,6 +20,7 @@ const EFFECT_OPTIONS: { key: VisualEffect; label: string; icon: string }[] = [
 
 export default function App() {
   const [settings, setSettings] = useState<Settings>(loadSettings);
+  const [isLandscape, setIsLandscape] = useState(false);
   const {
     status,
     count,
@@ -70,11 +71,37 @@ export default function App() {
     }
   }, []);
 
+  // 锁定竖屏方向 + 横屏提示
+  useEffect(() => {
+    const checkOrientation = () => {
+      setIsLandscape(window.innerWidth > window.innerHeight);
+    };
+    checkOrientation();
+    window.addEventListener('resize', checkOrientation);
+
+    // Screen Orientation API — 强制锁定竖屏
+    if ('orientation' in screen && typeof (screen.orientation as any).lock === 'function') {
+      (screen.orientation as any).lock('portrait').catch(() => {
+        // 部分浏览器不支持 lock，忽略
+      });
+    }
+
+    return () => window.removeEventListener('resize', checkOrientation);
+  }, []);
+
   const isRunning = status === 'listening' || status === 'paused';
   const currentEffect = EFFECT_OPTIONS.find((e) => e.key === settings.visualEffect) || EFFECT_OPTIONS[0];
 
   return (
-    <div className="app">
+    <>
+      {isLandscape && (
+        <div className="rotate-overlay">
+          <div className="rotate-icon">📱</div>
+          <div className="rotate-text">请竖屏使用</div>
+          <div className="rotate-sub">旋转设备以获得最佳体验</div>
+        </div>
+      )}
+      <div className="app">
       <ParticleEffect effect={settings.visualEffect} />
 
       <header className="app-header">
@@ -196,5 +223,6 @@ export default function App() {
         </section>
       </main>
     </div>
+    </>
   );
 }
