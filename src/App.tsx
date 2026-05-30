@@ -20,7 +20,7 @@ const EFFECT_OPTIONS: { key: VisualEffect; label: string; icon: string }[] = [
 
 export default function App() {
   const [settings, setSettings] = useState<Settings>(loadSettings);
-  const [isLandscape, setIsLandscape] = useState(false);
+  const [orientationBlocked, setOrientationBlocked] = useState(false);
   const {
     status,
     count,
@@ -71,30 +71,42 @@ export default function App() {
     }
   }, []);
 
-  // 锁定竖屏方向 + 横屏提示
+  // 设备检测：移动端 vs 桌面端
+  const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    || (navigator.maxTouchPoints > 0 && window.innerWidth < 1024);
+
+  // 方向管理：移动端强制竖屏，桌面端强制横屏
   useEffect(() => {
     const checkOrientation = () => {
-      setIsLandscape(window.innerWidth > window.innerHeight);
+      const isLandscape = window.innerWidth > window.innerHeight;
+      if (isMobile) {
+        // 移动端 — 横屏时遮罩提示竖屏
+        setOrientationBlocked(isLandscape);
+      } else {
+        // 桌面端 — 从不遮罩，始终可用
+        setOrientationBlocked(false);
+      }
     };
     checkOrientation();
     window.addEventListener('resize', checkOrientation);
 
-    // Screen Orientation API — 强制锁定竖屏
+    // Screen Orientation API — 移动端锁竖屏，桌面端锁横屏
     if ('orientation' in screen && typeof (screen.orientation as any).lock === 'function') {
-      (screen.orientation as any).lock('portrait').catch(() => {
+      const lockTarget = isMobile ? 'portrait' : 'landscape';
+      (screen.orientation as any).lock(lockTarget).catch(() => {
         // 部分浏览器不支持 lock，忽略
       });
     }
 
     return () => window.removeEventListener('resize', checkOrientation);
-  }, []);
+  }, [isMobile]);
 
   const isRunning = status === 'listening' || status === 'paused';
   const currentEffect = EFFECT_OPTIONS.find((e) => e.key === settings.visualEffect) || EFFECT_OPTIONS[0];
 
   return (
     <>
-      {isLandscape && (
+      {orientationBlocked && (
         <div className="rotate-overlay">
           <div className="rotate-icon">📱</div>
           <div className="rotate-text">请竖屏使用</div>
