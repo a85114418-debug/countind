@@ -157,6 +157,45 @@ body::before {
   color: rgba(255, 255, 255, 0.4);
 }
 
+/* === 模式切换标签 === */
+.mode-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 0 8px;
+}
+
+.mode-tab {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mode-tab:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.mode-tab.active {
+  border-color: rgba(66, 133, 244, 0.5);
+  background: rgba(66, 133, 244, 0.12);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(66, 133, 244, 0.15);
+}
+
+.mode-tab-icon { font-size: 16px; }
+.mode-tab-label { letter-spacing: 1px; }
+
 .status-dot {
   display: inline-block;
   width: 7px;

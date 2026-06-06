@@ -1,7 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
-import type { Settings, VisualEffect } from './types';
+import type { AppMode, Settings, VisualEffect } from './types';
 import { useAudioDetector } from './hooks/useAudioDetector';
+import { useCountdownTimer } from './hooks/useCountdownTimer';
 import { loadSettings, saveSettings } from './utils/storage';
+import { closeAudioCtx } from './utils/beep';
 import { CounterDial } from './components/CounterDial';
 import { VolumeMeter } from './components/VolumeMeter';
 import { ControlBar } from './components/ControlBar';
@@ -18,28 +20,48 @@ const EFFECT_OPTIONS: { key: VisualEffect; label: string; icon: string }[] = [
   { key: 'rain', label: '雨点', icon: '🌧' },
 ];
 
+const MODE_OPTIONS: { key: AppMode; label: string; icon: string }[] = [
+  { key: 'voice', label: '声控计数', icon: '🎤' },
+  { key: 'countdown', label: '倒计数', icon: '⏱' },
+];
+
 export default function App() {
   const [settings, setSettings] = useState<Settings>(loadSettings);
   const [orientationBlocked, setOrientationBlocked] = useState(false);
+
+  // 始终初始化两个 hook（只有活跃模式的操作才会生效）
+  const voice = useAudioDetector(settings);
+  const countdown = useCountdownTimer(settings);
+
+  // 根据当前模式选择状态和操作
+  const isCountdown = settings.mode === 'countdown';
   const {
     status,
     count,
-    dbLevel,
-    baseline,
-    logs,
     isFlashing,
-    startListening,
-    pause,
-    resume,
-    reset,
-    calibrate,
-    setSimulatedDb,
-  } = useAudioDetector(settings);
+    logs,
+  } = isCountdown
+    ? countdown
+    : voice;
+  const activeReset = isCountdown ? countdown.reset : voice.reset;
+  const activePause = isCountdown ? countdown.pause : voice.pause;
+  const activeResume = isCountdown ? countdown.resume : voice.resume;
 
   const [showSettings, setShowSettings] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
   const [effectMenuOpen, setEffectMenuOpen] = useState(false);
+
+  /** 切换模式 — 重置两边，切换后保存 */
+  const handleModeChange = useCallback((newMode: AppMode) => {
+    if (newMode === settings.mode) return;
+    voice.reset();
+    countdown.reset();
+    closeAudioCtx();
+    const next = { ...settings, mode: newMode };
+    setSettings(next);
+    saveSettings(next);
+  }, [settings, voice, countdown]);
 
   const handleSettingsChange = useCallback((s: Settings) => {
     setSettings(s);
@@ -55,15 +77,18 @@ export default function App() {
     setEffectMenuOpen(false);
   }, []);
 
+  /** 启动按钮 — 根据模式分发 */
   const handleStart = useCallback(async () => {
-    try {
-      await startListening();
-    } catch { /* hook 已记录错误 */ }
-  }, [startListening]);
+    if (isCountdown) {
+      countdown.start();
+    } else {
+      try { await voice.startListening(); } catch { /* 错误已在 hook 内记录 */ }
+    }
+  }, [isCountdown, countdown, voice]);
 
   const handleCalibrate = useCallback(async () => {
-    await calibrate();
-  }, [calibrate]);
+    await voice.calibrate();
+  }, [voice.calibrate]);
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -80,22 +105,17 @@ export default function App() {
     const checkOrientation = () => {
       const isLandscape = window.innerWidth > window.innerHeight;
       if (isMobile) {
-        // 移动端 — 横屏时遮罩提示竖屏
         setOrientationBlocked(isLandscape);
       } else {
-        // 桌面端 — 从不遮罩，始终可用
         setOrientationBlocked(false);
       }
     };
     checkOrientation();
     window.addEventListener('resize', checkOrientation);
 
-    // Screen Orientation API — 移动端锁竖屏，桌面端锁横屏
     if ('orientation' in screen && typeof (screen.orientation as any).lock === 'function') {
       const lockTarget = isMobile ? 'portrait' : 'landscape';
-      (screen.orientation as any).lock(lockTarget).catch(() => {
-        // 部分浏览器不支持 lock，忽略
-      });
+      (screen.orientation as any).lock(lockTarget).catch(() => {});
     }
 
     return () => window.removeEventListener('resize', checkOrientation);
@@ -103,6 +123,15 @@ export default function App() {
 
   const isRunning = status === 'listening' || status === 'paused';
   const currentEffect = EFFECT_OPTIONS.find((e) => e.key === settings.visualEffect) || EFFECT_OPTIONS[0];
+  const displayTarget = isCountdown ? settings.countdownTotal : settings.target;
+
+  /** 状态文本 */
+  const statusLabel = (() => {
+    if (status === 'idle') return isCountdown ? '就绪' : '未开始';
+    if (status === 'listening') return isCountdown ? '倒计时中' : '监听中';
+    if (status === 'paused') return '已暂停';
+    return '已完成';
+  })();
 
   return (
     <>
@@ -118,29 +147,46 @@ export default function App() {
 
       <header className="app-header">
         <h1>CountinD</h1>
+        {/* 模式切换标签 */}
+        <div className="mode-tabs">
+          {MODE_OPTIONS.map((opt) => (
+            <button
+              key={opt.key}
+              className={`mode-tab ${settings.mode === opt.key ? 'active' : ''}`}
+              onClick={() => handleModeChange(opt.key)}
+            >
+              <span className="mode-tab-icon">{opt.icon}</span>
+              <span className="mode-tab-label">{opt.label}</span>
+            </button>
+          ))}
+        </div>
         <div className="header-status">
           状态：<span className={`status-dot status-${status}`} />
-          {status === 'idle' && '未开始'}
-          {status === 'listening' && '监听中'}
-          {status === 'paused' && '已暂停'}
-          {status === 'finished' && '已完成'}
+          {statusLabel}
         </div>
       </header>
 
       <main className="app-main">
         {/* 计数器表盘 */}
         <section className="section-dial">
-          <CounterDial count={count} target={settings.target} isFlashing={isFlashing} />
-        </section>
-
-        {/* 实时音量条 */}
-        <section className="section-volume">
-          <VolumeMeter
-            dbLevel={dbLevel}
-            threshold={settings.threshold}
-            baseline={baseline}
+          <CounterDial
+            count={count}
+            target={displayTarget}
+            isFlashing={isFlashing}
+            reverse={isCountdown}
           />
         </section>
+
+        {/* 实时音量条 — 仅在声控模式显示 */}
+        {!isCountdown && (
+          <section className="section-volume">
+            <VolumeMeter
+              dbLevel={voice.dbLevel}
+              threshold={settings.threshold}
+              baseline={voice.baseline}
+            />
+          </section>
+        )}
 
         {/* 特效切换按钮 */}
         <section className="section-effect">
@@ -175,9 +221,9 @@ export default function App() {
           <ControlBar
             status={status}
             onStart={handleStart}
-            onPause={pause}
-            onResume={resume}
-            onReset={reset}
+            onPause={activePause}
+            onResume={activeResume}
+            onReset={activeReset}
           />
         </section>
 
@@ -208,7 +254,7 @@ export default function App() {
             <div className="panel-content">
               <SettingsPanel
                 settings={settings}
-                baseline={baseline}
+                baseline={voice.baseline}
                 onChange={handleSettingsChange}
                 onCalibrate={handleCalibrate}
                 disabled={isRunning}
@@ -224,11 +270,11 @@ export default function App() {
             <div className="panel-content">
               <DebugPanel
                 status={status}
-                dbLevel={dbLevel}
-                baseline={baseline}
+                dbLevel={isCountdown ? 0 : voice.dbLevel}
+                baseline={isCountdown ? 0 : voice.baseline}
                 count={count}
                 logs={logs}
-                onSimulate={setSimulatedDb}
+                onSimulate={isCountdown ? (() => {}) : voice.setSimulatedDb}
               />
             </div>
           )}

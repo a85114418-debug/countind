@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import type { Settings } from '../types';
+import type { Settings, SoundType } from '../types';
 import './SettingsPanel.css';
 
 interface Props {
@@ -9,6 +9,12 @@ interface Props {
   onCalibrate: () => void;
   disabled: boolean;
 }
+
+const SOUND_OPTIONS: { key: SoundType; label: string }[] = [
+  { key: 'beep', label: '短促单音' },
+  { key: 'double-beep', label: '双连音' },
+  { key: 'chime', label: '上升音' },
+];
 
 function stripLeadingZeros(raw: string): string {
   const s = raw.replace(/^0+(?=\d)/, '');
@@ -20,12 +26,16 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
   const [localTarget, setLocalTarget] = useState(String(settings.target));
   const [localInitial, setLocalInitial] = useState(String(settings.initialCount));
   const [localCooldown, setLocalCooldown] = useState(String(settings.cooldownMs));
+  const [localTotal, setLocalTotal] = useState(String(settings.countdownTotal));
+  const [localInterval, setLocalInterval] = useState(String(settings.countdownInterval));
 
   // 同步外部 settings 变化
   useEffect(() => { setLocalThreshold(String(settings.threshold)); }, [settings.threshold]);
   useEffect(() => { setLocalTarget(String(settings.target)); }, [settings.target]);
   useEffect(() => { setLocalInitial(String(settings.initialCount)); }, [settings.initialCount]);
   useEffect(() => { setLocalCooldown(String(settings.cooldownMs)); }, [settings.cooldownMs]);
+  useEffect(() => { setLocalTotal(String(settings.countdownTotal)); }, [settings.countdownTotal]);
+  useEffect(() => { setLocalInterval(String(settings.countdownInterval)); }, [settings.countdownInterval]);
 
   const handleThresholdBlur = useCallback(() => {
     const cleaned = stripLeadingZeros(localThreshold);
@@ -55,69 +65,146 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
     onChange({ ...settings, cooldownMs: num });
   }, [localCooldown, settings, onChange]);
 
+  const handleTotalBlur = useCallback(() => {
+    const cleaned = stripLeadingZeros(localTotal);
+    const num = Math.max(1, Math.min(9999, Number(cleaned) || 1));
+    setLocalTotal(String(num));
+    onChange({ ...settings, countdownTotal: num });
+  }, [localTotal, settings, onChange]);
+
+  const handleIntervalBlur = useCallback(() => {
+    const cleaned = stripLeadingZeros(localInterval);
+    const num = Math.max(1, Math.min(3600, Number(cleaned) || 1));
+    setLocalInterval(String(num));
+    onChange({ ...settings, countdownInterval: num });
+  }, [localInterval, settings, onChange]);
+
+  const isCountdown = settings.mode === 'countdown';
+
   return (
     <div className="settings-panel">
-      <h3 className="sp-title">设置</h3>
+      <h3 className="sp-title">{isCountdown ? '倒计时设置' : '声控设置'}</h3>
 
-      <label className="sp-field">
-        <span>触发阈值 (dB)</span>
-        <input
-          type="text"
-          inputMode="numeric"
-          pattern="[0-9]*"
-          value={localThreshold}
-          onChange={(e) => setLocalThreshold(e.target.value)}
-          onBlur={handleThresholdBlur}
-          disabled={disabled}
-        />
-      </label>
+      {isCountdown ? (
+        <>
+          <label className="sp-field">
+            <span>计数总数</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={localTotal}
+              onChange={(e) => setLocalTotal(e.target.value)}
+              onBlur={handleTotalBlur}
+              disabled={disabled}
+            />
+          </label>
 
-      <label className="sp-field">
-        <span>目标计数</span>
-        <input
-          type="text"
-          inputMode="numeric"
-          pattern="[0-9]*"
-          value={localTarget}
-          onChange={(e) => setLocalTarget(e.target.value)}
-          onBlur={handleTargetBlur}
-          disabled={disabled}
-        />
-      </label>
+          <label className="sp-field">
+            <span>递减间隔 (秒)</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={localInterval}
+              onChange={(e) => setLocalInterval(e.target.value)}
+              onBlur={handleIntervalBlur}
+              disabled={disabled}
+            />
+          </label>
 
-      <label className="sp-field">
-        <span>初始计数</span>
-        <input
-          type="text"
-          inputMode="numeric"
-          pattern="[0-9]*"
-          value={localInitial}
-          onChange={(e) => setLocalInitial(e.target.value)}
-          onBlur={handleInitialBlur}
-          disabled={disabled}
-        />
-      </label>
+          <label className="sp-field">
+            <span>提示音类型</span>
+            <select
+              className="sp-select"
+              value={settings.soundType}
+              onChange={(e) => onChange({ ...settings, soundType: e.target.value as SoundType })}
+              disabled={disabled}
+            >
+              {SOUND_OPTIONS.map((opt) => (
+                <option key={opt.key} value={opt.key}>{opt.label}</option>
+              ))}
+            </select>
+          </label>
 
-      <label className="sp-field">
-        <span>计数间隔 (ms)</span>
-        <input
-          type="text"
-          inputMode="numeric"
-          pattern="[0-9]*"
-          value={localCooldown}
-          onChange={(e) => setLocalCooldown(e.target.value)}
-          onBlur={handleCooldownBlur}
-          disabled={disabled}
-        />
-      </label>
+          <label className="sp-field">
+            <span>提示音音量</span>
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.05}
+              value={settings.soundVolume}
+              onChange={(e) => onChange({ ...settings, soundVolume: Number(e.target.value) })}
+              className="sp-slider"
+              disabled={disabled}
+            />
+            <span className="sp-slider-val">{Math.round(settings.soundVolume * 100)}%</span>
+          </label>
+        </>
+      ) : (
+        <>
+          <label className="sp-field">
+            <span>触发阈值 (dB)</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={localThreshold}
+              onChange={(e) => setLocalThreshold(e.target.value)}
+              onBlur={handleThresholdBlur}
+              disabled={disabled}
+            />
+          </label>
 
-      <div className="sp-baseline">
-        环境噪音基线：<strong>{baseline.toFixed(1)} dB</strong>
-      </div>
+          <label className="sp-field">
+            <span>目标计数</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={localTarget}
+              onChange={(e) => setLocalTarget(e.target.value)}
+              onBlur={handleTargetBlur}
+              disabled={disabled}
+            />
+          </label>
 
-      <button className="sp-calibrate-btn" onClick={onCalibrate} disabled={disabled}>
-        环境噪音校准
-      </button>
+          <label className="sp-field">
+            <span>初始计数</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={localInitial}
+              onChange={(e) => setLocalInitial(e.target.value)}
+              onBlur={handleInitialBlur}
+              disabled={disabled}
+            />
+          </label>
+
+          <label className="sp-field">
+            <span>计数间隔 (ms)</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={localCooldown}
+              onChange={(e) => setLocalCooldown(e.target.value)}
+              onBlur={handleCooldownBlur}
+              disabled={disabled}
+            />
+          </label>
+
+          <div className="sp-baseline">
+            环境噪音基线：<strong>{baseline.toFixed(1)} dB</strong>
+          </div>
+
+          <button className="sp-calibrate-btn" onClick={onCalibrate} disabled={disabled}>
+            环境噪音校准
+          </button>
+        </>
+      )}
     </div>
   );
 }

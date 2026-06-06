@@ -4,6 +4,7 @@ interface Props {
   count: number;
   target: number;
   isFlashing: boolean;
+  reverse?: boolean; // 逆时针进度（倒计时用）
 }
 
 /** Google 四色渐变 */
@@ -15,8 +16,9 @@ const GOOGLE_COLORS = [
   { offset: '100%', color: '#4285F4' },
 ];
 
-export function CounterDial({ count, target, isFlashing }: Props) {
-  const progress = target > 0 ? Math.min(count / target, 1) : 0;
+export function CounterDial({ count, target, isFlashing, reverse = false }: Props) {
+  const rawProgress = target > 0 ? Math.min(count / target, 1) : 0;
+  const progress = reverse ? 1 - rawProgress : rawProgress;
   const r = 78;
   const circumference = 2 * Math.PI * r;
   const dashOffset = circumference * (1 - progress);

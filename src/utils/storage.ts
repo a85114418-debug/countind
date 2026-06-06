@@ -6,13 +6,29 @@ const KEYS = {
   logs: 'countind_logs',
 } as const;
 
-/** 从 localStorage 读取用户设置，不存在则返回默认值 */
+const DEFAULT_SETTINGS: Settings = {
+  mode: 'voice',
+  threshold: 30,
+  target: 10,
+  initialCount: 0,
+  cooldownMs: 1000,
+  countdownTotal: 10,
+  countdownInterval: 2,
+  soundType: 'beep',
+  soundVolume: 0.5,
+  visualEffect: 'none',
+};
+
+/** 从 localStorage 读取用户设置，填充缺失字段 */
 export function loadSettings(): Settings {
   try {
     const raw = localStorage.getItem(KEYS.settings);
-    if (raw) return JSON.parse(raw) as Settings;
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<Settings>;
+      return { ...DEFAULT_SETTINGS, ...parsed };
+    }
   } catch { /* 数据损坏时回退默认值 */ }
-  return { threshold: 30, target: 10, initialCount: 0, visualEffect: 'none', cooldownMs: 1000 };
+  return { ...DEFAULT_SETTINGS };
 }
 
 /** 保存用户设置到 localStorage */
