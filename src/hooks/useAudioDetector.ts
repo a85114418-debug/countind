@@ -5,8 +5,8 @@ import { saveRecord as persistRecord } from '../utils/storage';
 
 /** 噪音校准采样时长（毫秒） */
 const CALIBRATE_MS = 2000;
-/** 音量采样间隔（毫秒），约 50ms 对应 20fps */
-const SAMPLE_INTERVAL = 50;
+/** 音量显示更新间隔（毫秒），5fps */
+const DISPLAY_INTERVAL = 200;
 
 let logId = 0;
 function makeLog(message: string, level: LogEntry['level'] = 'info'): LogEntry {
@@ -23,7 +23,9 @@ export function useAudioDetector(settings: Settings) {
   const [isFlashing, setIsFlashing] = useState(false);
 
   const analyserRef = useRef<AnalyserNode | null>(null);
-  const timerRef = useRef<number | null>(null);
+  const rafRef = useRef<number>(0);
+  const lastSampleTimeRef = useRef(0);
+  const lastDisplayTimeRef = useRef(0);
   const cooldownRef = useRef(false);
   const statusRef = useRef<AppStatus>('idle');
   const countRef = useRef(settings.initialCount);
@@ -65,33 +67,41 @@ export function useAudioDetector(settings: Settings) {
     return avg;
   }, [addLog]);
 
-  /** 检测循环：每 50ms 执行一次 */
-  const tick = useCallback(() => {
+  /** 检测循环（RAF 驱动，与渲染帧同步） */
+  const tickRaf = useCallback((timestamp: number) => {
     const analyser = analyserRef.current;
     if (!analyser || statusRef.current !== 'listening') return;
+
+    // 限频 ~50ms (20fps)，与大多数麦克风刷新率匹配
+    if (timestamp - lastSampleTimeRef.current < 50) {
+      rafRef.current = requestAnimationFrame(tickRaf);
+      return;
+    }
+    lastSampleTimeRef.current = timestamp;
 
     // 支持模拟音量（调试用）
     const simulated = simulatedDbRef.current;
     const rawDb = simulated !== null ? simulated : toDecibel(getVolume(analyser));
-    setCurrentVolume(rawDb);
-    setDbLevel(rawDb);
+
+    // 显示更新降频到 ~5fps，减少 React 渲染压力
+    if (timestamp - lastDisplayTimeRef.current >= DISPLAY_INTERVAL) {
+      lastDisplayTimeRef.current = timestamp;
+      setCurrentVolume(rawDb);
+      setDbLevel(rawDb);
+    }
 
     const { threshold } = settingsRef.current;
-    // 有效阈值 = 用户设置 + 环境基线
     const effectiveThreshold = threshold + baseline;
 
     if (!cooldownRef.current && rawDb > effectiveThreshold) {
-      // 峰值触发
       cooldownRef.current = true;
       countRef.current += 1;
       setCount(countRef.current);
       setIsFlashing(true);
       addLog(`触发! ${countRef.current} (音量: ${rawDb.toFixed(1)} dB)`);
 
-      // 闪烁动画 300ms 后恢复
       setTimeout(() => setIsFlashing(false), 300);
 
-      // 检查是否达到目标
       if (countRef.current >= settingsRef.current.target) {
         setStatus('finished');
         statusRef.current = 'finished';
@@ -106,13 +116,12 @@ export function useAudioDetector(settings: Settings) {
         return;
       }
 
-      // 冷却期结束后恢复检测
       setTimeout(() => {
         cooldownRef.current = false;
       }, settingsRef.current.cooldownMs);
     }
 
-    timerRef.current = window.setTimeout(tick, SAMPLE_INTERVAL);
+    rafRef.current = requestAnimationFrame(tickRaf);
   }, [baseline, addLog]);
 
   /** 开启声控监听 */
@@ -125,7 +134,7 @@ export function useAudioDetector(settings: Settings) {
       statusRef.current = 'listening';
       setStatus('listening');
       addLog('开始监听...');
-      tick();
+      rafRef.current = requestAnimationFrame(tickRaf);
     } catch (err: any) {
       const msg =
         err.name === 'NotAllowedError'
@@ -134,13 +143,13 @@ export function useAudioDetector(settings: Settings) {
       addLog(msg, 'error');
       throw new Error(msg);
     }
-  }, [calibrate, tick, addLog]);
+  }, [calibrate, tickRaf, addLog]);
 
   /** 暂停监听 */
   const pause = useCallback(() => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
     }
     statusRef.current = 'paused';
     setStatus('paused');
@@ -152,14 +161,14 @@ export function useAudioDetector(settings: Settings) {
     statusRef.current = 'listening';
     setStatus('listening');
     addLog('继续监听...');
-    tick();
-  }, [tick, addLog]);
+    rafRef.current = requestAnimationFrame(tickRaf);
+  }, [tickRaf, addLog]);
 
   /** 停止并重置 */
   const reset = useCallback(() => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
     }
     cooldownRef.current = false;
     countRef.current = settingsRef.current.initialCount;
@@ -187,7 +196,7 @@ export function useAudioDetector(settings: Settings) {
   // 组件卸载时清理
   useEffect(() => {
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
       closeAudio();
     };
   }, []);
