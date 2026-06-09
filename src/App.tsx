@@ -110,22 +110,19 @@ export default function App() {
   const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     || (navigator.maxTouchPoints > 0 && window.innerWidth < 1024);
 
-  // 方向管理：移动端强制竖屏，桌面端强制横屏
+  // 方向管理：移动端强制竖屏，桌面端不限
   useEffect(() => {
     const checkOrientation = () => {
       const isLandscape = window.innerWidth > window.innerHeight;
-      if (isMobile) {
-        setOrientationBlocked(isLandscape);
-      } else {
-        setOrientationBlocked(false);
-      }
+      // 移动端横屏时显示遮罩，桌面端始终放行
+      setOrientationBlocked(!!(isMobile && isLandscape));
     };
     checkOrientation();
     window.addEventListener('resize', checkOrientation);
 
-    if ('orientation' in screen && typeof (screen.orientation as any).lock === 'function') {
-      const lockTarget = isMobile ? 'portrait' : 'landscape';
-      (screen.orientation as any).lock(lockTarget).catch(() => {});
+    // 仅在移动端锁定竖屏
+    if (isMobile && 'orientation' in screen && typeof (screen.orientation as any).lock === 'function') {
+      (screen.orientation as any).lock('portrait').catch(() => {});
     }
 
     return () => window.removeEventListener('resize', checkOrientation);
