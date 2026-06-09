@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import type { Settings, SoundType } from '../types';
+import type { Settings, SoundType, CountdownMode, RandomTotalMode, RandomTier } from '../types';
 import './SettingsPanel.css';
 
 interface Props {
@@ -28,6 +28,9 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
   const [localCooldown, setLocalCooldown] = useState(String(settings.cooldownMs));
   const [localTotal, setLocalTotal] = useState(String(settings.countdownTotal));
   const [localInterval, setLocalInterval] = useState(String(settings.countdownInterval));
+  const [localRandomManual, setLocalRandomManual] = useState(String(settings.randomTotalManual));
+  const [localRandomMin, setLocalRandomMin] = useState(String(settings.randomRangeMin));
+  const [localRandomMax, setLocalRandomMax] = useState(String(settings.randomRangeMax));
 
   // 同步外部 settings 变化
   useEffect(() => { setLocalThreshold(String(settings.threshold)); }, [settings.threshold]);
@@ -36,6 +39,9 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
   useEffect(() => { setLocalCooldown(String(settings.cooldownMs)); }, [settings.cooldownMs]);
   useEffect(() => { setLocalTotal(String(settings.countdownTotal)); }, [settings.countdownTotal]);
   useEffect(() => { setLocalInterval(String(settings.countdownInterval)); }, [settings.countdownInterval]);
+  useEffect(() => { setLocalRandomManual(String(settings.randomTotalManual)); }, [settings.randomTotalManual]);
+  useEffect(() => { setLocalRandomMin(String(settings.randomRangeMin)); }, [settings.randomRangeMin]);
+  useEffect(() => { setLocalRandomMax(String(settings.randomRangeMax)); }, [settings.randomRangeMax]);
 
   const handleThresholdBlur = useCallback(() => {
     const cleaned = stripLeadingZeros(localThreshold);
@@ -79,6 +85,27 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
     onChange({ ...settings, countdownInterval: num });
   }, [localInterval, settings, onChange]);
 
+  const handleRandomManualBlur = useCallback(() => {
+    const cleaned = stripLeadingZeros(localRandomManual);
+    const num = Math.max(1, Math.min(9999, Number(cleaned) || 1));
+    setLocalRandomManual(String(num));
+    onChange({ ...settings, randomTotalManual: num });
+  }, [localRandomManual, settings, onChange]);
+
+  const handleRandomMinBlur = useCallback(() => {
+    const cleaned = stripLeadingZeros(localRandomMin);
+    const num = Math.max(1, Math.min(9999, Number(cleaned) || 1));
+    setLocalRandomMin(String(num));
+    onChange({ ...settings, randomRangeMin: num });
+  }, [localRandomMin, settings, onChange]);
+
+  const handleRandomMaxBlur = useCallback(() => {
+    const cleaned = stripLeadingZeros(localRandomMax);
+    const num = Math.max(1, Math.min(9999, Number(cleaned) || 1));
+    setLocalRandomMax(String(num));
+    onChange({ ...settings, randomRangeMax: num });
+  }, [localRandomMax, settings, onChange]);
+
   const isCountdown = settings.mode === 'countdown';
 
   return (
@@ -87,31 +114,136 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
 
       {isCountdown ? (
         <>
-          <label className="sp-field">
-            <span>计数总数</span>
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={localTotal}
-              onChange={(e) => setLocalTotal(e.target.value)}
-              onBlur={handleTotalBlur}
+          {/* 倒计数子模式切换 */}
+          <div className="sp-submode-tabs">
+            <button
+              className={`sp-submode-tab ${settings.countdownMode === 'fixed' ? 'active' : ''}`}
+              onClick={() => onChange({ ...settings, countdownMode: 'fixed' as CountdownMode })}
               disabled={disabled}
-            />
-          </label>
+            >
+              固定间隔
+            </button>
+            <button
+              className={`sp-submode-tab ${settings.countdownMode === 'random' ? 'active' : ''}`}
+              onClick={() => onChange({ ...settings, countdownMode: 'random' as CountdownMode })}
+              disabled={disabled}
+            >
+              随机频率
+            </button>
+          </div>
 
-          <label className="sp-field">
-            <span>递减间隔 (秒)</span>
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={localInterval}
-              onChange={(e) => setLocalInterval(e.target.value)}
-              onBlur={handleIntervalBlur}
-              disabled={disabled}
-            />
-          </label>
+          {settings.countdownMode === 'fixed' ? (
+            <>
+              <label className="sp-field">
+                <span>计数总数</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={localTotal}
+                  onChange={(e) => setLocalTotal(e.target.value)}
+                  onBlur={handleTotalBlur}
+                  disabled={disabled}
+                />
+              </label>
+
+              <label className="sp-field">
+                <span>递减间隔 (秒)</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={localInterval}
+                  onChange={(e) => setLocalInterval(e.target.value)}
+                  onBlur={handleIntervalBlur}
+                  disabled={disabled}
+                />
+              </label>
+            </>
+          ) : (
+            <>
+              {/* 总数来源 */}
+              <div className="sp-section-label">总数来源</div>
+              <div className="sp-totalmode-tabs">
+                <button
+                  className={`sp-totalmode-tab ${settings.randomTotalMode === 'manual' ? 'active' : ''}`}
+                  onClick={() => onChange({ ...settings, randomTotalMode: 'manual' as RandomTotalMode })}
+                  disabled={disabled}
+                >
+                  手动输入
+                </button>
+                <button
+                  className={`sp-totalmode-tab ${settings.randomTotalMode === 'range' ? 'active' : ''}`}
+                  onClick={() => onChange({ ...settings, randomTotalMode: 'range' as RandomTotalMode })}
+                  disabled={disabled}
+                >
+                  随机区间
+                </button>
+              </div>
+
+              {settings.randomTotalMode === 'manual' ? (
+                <label className="sp-field">
+                  <span>计数总数</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={localRandomManual}
+                    onChange={(e) => setLocalRandomManual(e.target.value)}
+                    onBlur={handleRandomManualBlur}
+                    disabled={disabled}
+                  />
+                </label>
+              ) : (
+                <label className="sp-field">
+                  <span>随机区间</span>
+                  <div className="sp-range-row">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={localRandomMin}
+                      onChange={(e) => setLocalRandomMin(e.target.value)}
+                      onBlur={handleRandomMinBlur}
+                      disabled={disabled}
+                      placeholder="最小"
+                    />
+                    <span className="sp-range-sep">–</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={localRandomMax}
+                      onChange={(e) => setLocalRandomMax(e.target.value)}
+                      onBlur={handleRandomMaxBlur}
+                      disabled={disabled}
+                      placeholder="最大"
+                    />
+                  </div>
+                </label>
+              )}
+
+              {/* 频率挡位 */}
+              <div className="sp-section-label">频率挡位</div>
+              <div className="sp-tier-tabs">
+                {([
+                  ['low', '低', '2–10s'],
+                  ['mid', '中', '0.5–5s'],
+                  ['high', '高', '0.1–2s'],
+                ] as const).map(([key, label, range]) => (
+                  <button
+                    key={key}
+                    className={`sp-tier-tab ${settings.randomTier === key ? 'active' : ''}`}
+                    onClick={() => onChange({ ...settings, randomTier: key as RandomTier })}
+                    disabled={disabled}
+                  >
+                    <span className="sp-tier-label">{label}</span>
+                    <span className="sp-tier-range">{range}</span>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
 
           <label className="sp-field">
             <span>提示音类型</span>

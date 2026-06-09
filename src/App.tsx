@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import type { AppMode, Settings, VisualEffect } from './types';
 import { useAudioDetector } from './hooks/useAudioDetector';
 import { useCountdownTimer } from './hooks/useCountdownTimer';
+import { useRandomCountdown } from './hooks/useRandomCountdown';
 import { loadSettings, saveSettings } from './utils/storage';
 import { closeAudioCtx } from './utils/beep';
 import { CounterDial } from './components/CounterDial';
@@ -29,39 +30,44 @@ export default function App() {
   const [settings, setSettings] = useState<Settings>(loadSettings);
   const [orientationBlocked, setOrientationBlocked] = useState(false);
 
-  // 始终初始化两个 hook（只有活跃模式的操作才会生效）
+  // 始终初始化所有 hook（只有活跃模式的操作才会生效）
   const voice = useAudioDetector(settings);
   const countdown = useCountdownTimer(settings);
+  const random = useRandomCountdown(settings);
 
   // 根据当前模式选择状态和操作
   const isCountdown = settings.mode === 'countdown';
+  const isRandom = isCountdown && settings.countdownMode === 'random';
+  const activeCountdown = isRandom ? random : countdown;
+
   const {
     status,
     count,
     isFlashing,
     logs,
   } = isCountdown
-    ? countdown
+    ? activeCountdown
     : voice;
-  const activeReset = isCountdown ? countdown.reset : voice.reset;
-  const activePause = isCountdown ? countdown.pause : voice.pause;
-  const activeResume = isCountdown ? countdown.resume : voice.resume;
+  const activeReset = isCountdown ? activeCountdown.reset : voice.reset;
+  const activePause = isCountdown ? activeCountdown.pause : voice.pause;
+  const activeResume = isCountdown ? activeCountdown.resume : voice.resume;
 
   const [showSettings, setShowSettings] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
   const [effectMenuOpen, setEffectMenuOpen] = useState(false);
 
-  /** 切换模式 — 重置两边，切换后保存 */
+  /** 切换模式 — 重置三边，切换后保存 */
   const handleModeChange = useCallback((newMode: AppMode) => {
     if (newMode === settings.mode) return;
     voice.reset();
     countdown.reset();
+    random.reset();
     closeAudioCtx();
     const next = { ...settings, mode: newMode };
     setSettings(next);
     saveSettings(next);
-  }, [settings, voice, countdown]);
+  }, [settings, voice, countdown, random]);
 
   const handleSettingsChange = useCallback((s: Settings) => {
     setSettings(s);
@@ -80,11 +86,15 @@ export default function App() {
   /** 启动按钮 — 根据模式分发 */
   const handleStart = useCallback(async () => {
     if (isCountdown) {
-      countdown.start();
+      if (isRandom) {
+        random.start();
+      } else {
+        countdown.start();
+      }
     } else {
       try { await voice.startListening(); } catch { /* 错误已在 hook 内记录 */ }
     }
-  }, [isCountdown, countdown, voice]);
+  }, [isCountdown, isRandom, random, countdown, voice]);
 
   const handleCalibrate = useCallback(async () => {
     await voice.calibrate();
@@ -123,7 +133,7 @@ export default function App() {
 
   const isRunning = status === 'listening' || status === 'paused';
   const currentEffect = EFFECT_OPTIONS.find((e) => e.key === settings.visualEffect) || EFFECT_OPTIONS[0];
-  const displayTarget = isCountdown ? settings.countdownTotal : settings.target;
+  const displayTarget = isCountdown ? activeCountdown.total : settings.target;
 
   /** 状态文本 */
   const statusLabel = (() => {

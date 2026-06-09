@@ -7,6 +7,15 @@ export type AppMode = 'voice' | 'countdown';
 /** 提示音类型 */
 export type SoundType = 'beep' | 'double-beep' | 'chime';
 
+/** 倒计数子模式 */
+export type CountdownMode = 'fixed' | 'random';
+
+/** 随机倒计数 — 总数来源 */
+export type RandomTotalMode = 'manual' | 'range';
+
+/** 随机倒计数 — 频率挡位 */
+export type RandomTier = 'low' | 'mid' | 'high';
+
 /** 计数记录 */
 export interface CountRecord {
   id: string;
@@ -30,12 +39,19 @@ export interface Settings {
   initialCount: number; // 初始值
   cooldownMs: number;   // 计数最小间隔 (ms)
   // 倒计数模式
-  countdownTotal: number;    // 倒计数初始总数
-  countdownInterval: number; // 递减间隔（秒）
-  soundType: SoundType;      // 提示音类型
-  soundVolume: number;       // 提示音音量 0-1
+  countdownMode: CountdownMode;    // 倒计数子模式
+  countdownTotal: number;          // 固定倒计数初始总数
+  countdownInterval: number;       // 固定倒计数递减间隔（秒）
+  // 随机倒计数
+  randomTotalMode: RandomTotalMode; // 总数来源
+  randomTotalManual: number;        // 手动输入总数
+  randomRangeMin: number;           // 随机区间下限
+  randomRangeMax: number;           // 随机区间上限
+  randomTier: RandomTier;           // 频率挡位
+  soundType: SoundType;             // 提示音类型
+  soundVolume: number;              // 提示音音量 0-1
   // 通用
-  visualEffect: VisualEffect; // 视觉特效
+  visualEffect: VisualEffect;       // 视觉特效
 }
 
 /** 调试日志 */

@@ -164,3 +164,178 @@
   min-width: 36px;
   text-align: right;
 }
+
+/* === 倒计数子模式切换标签 === */
+.sp-submode-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.sp-submode-tab {
+  flex: 1;
+  padding: 7px 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.sp-submode-tab:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.sp-submode-tab.active {
+  border-color: rgba(234, 67, 53, 0.5);
+  background: rgba(234, 67, 53, 0.12);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(234, 67, 53, 0.15);
+}
+
+.sp-submode-tab:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* === 小节标签 === */
+.sp-section-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 6px;
+  letter-spacing: 2px;
+}
+
+/* === 总数来源切换 === */
+.sp-totalmode-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.sp-totalmode-tab {
+  flex: 1;
+  padding: 6px 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.sp-totalmode-tab:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.sp-totalmode-tab.active {
+  border-color: rgba(66, 133, 244, 0.5);
+  background: rgba(66, 133, 244, 0.1);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(66, 133, 244, 0.12);
+}
+
+.sp-totalmode-tab:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* === 区间输入行 === */
+.sp-range-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sp-range-row input {
+  width: 64px !important;
+  padding: 6px 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  text-align: center !important;
+  font-family: inherit !important;
+  outline: none !important;
+  transition: border-color 0.3s, box-shadow 0.3s !important;
+}
+
+.sp-range-row input:focus {
+  border-color: var(--g-blue, #4285F4) !important;
+  box-shadow: 0 0 12px rgba(66, 133, 244, 0.2) !important;
+}
+
+.sp-range-row input:disabled {
+  opacity: 0.4 !important;
+}
+
+.sp-range-sep {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 14px;
+}
+
+/* === 频率挡位选择 === */
+.sp-tier-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.sp-tier-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.sp-tier-tab:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.sp-tier-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 0.3s;
+}
+
+.sp-tier-range {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  transition: color 0.3s;
+}
+
+.sp-tier-tab.active {
+  border-color: rgba(251, 188, 5, 0.5);
+  background: rgba(251, 188, 5, 0.1);
+  box-shadow: 0 0 14px rgba(251, 188, 5, 0.12);
+}
+
+.sp-tier-tab.active .sp-tier-label {
+  color: #FBBC05;
+}
+
+.sp-tier-tab.active .sp-tier-range {
+  color: rgba(251, 188, 5, 0.6);
+}
+
+.sp-tier-tab:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
