@@ -106,27 +106,23 @@ export default function App() {
     }
   }, []);
 
-  // 设备检测：移动端 vs 桌面端
-  const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-    || (navigator.maxTouchPoints > 0 && window.innerWidth < 1024);
-
-  // 方向管理：移动端强制竖屏，桌面端不限
+  // 方向管理：所有设备强制竖屏
   useEffect(() => {
     const checkOrientation = () => {
       const isLandscape = window.innerWidth > window.innerHeight;
-      // 移动端横屏时显示遮罩，桌面端始终放行
-      setOrientationBlocked(!!(isMobile && isLandscape));
+      // 横屏时显示遮罩
+      setOrientationBlocked(isLandscape);
     };
     checkOrientation();
     window.addEventListener('resize', checkOrientation);
 
-    // 仅在移动端锁定竖屏
-    if (isMobile && 'orientation' in screen && typeof (screen.orientation as any).lock === 'function') {
+    // 尝试锁定竖屏（仅移动端浏览器支持）
+    if ('orientation' in screen && typeof (screen.orientation as any).lock === 'function') {
       (screen.orientation as any).lock('portrait').catch(() => {});
     }
 
     return () => window.removeEventListener('resize', checkOrientation);
-  }, [isMobile]);
+  }, []);
 
   const isRunning = status === 'listening' || status === 'paused';
   const currentEffect = EFFECT_OPTIONS.find((e) => e.key === settings.visualEffect) || EFFECT_OPTIONS[0];
