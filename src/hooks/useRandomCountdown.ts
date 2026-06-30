@@ -20,16 +20,13 @@ export interface RandomCountdownReturn {
   reset: () => void;
 }
 
-const TIER_CONFIG = {
-  low: { minMs: 2000, maxMs: 10000, label: '低' },
-  mid: { minMs: 500, maxMs: 5000, label: '中' },
-  high: { minMs: 100, maxMs: 2000, label: '高' },
-} as const;
-
-/** 根据挡位生成随机间隔（ms），相邻调用独立随机 */
-function randomInterval(tier: keyof typeof TIER_CONFIG): number {
-  const cfg = TIER_CONFIG[tier];
-  return cfg.minMs + Math.random() * (cfg.maxMs - cfg.minMs);
+/** 根据用户输入的频率（秒）生成随机间隔（ms），±50% 范围内随机 */
+function randomInterval(frequencySec: number): number {
+  const centerMs = frequencySec * 1000;
+  const spreadMs = centerMs * 0.5;
+  const minMs = Math.max(50, centerMs - spreadMs);
+  const maxMs = Math.min(20000, centerMs + spreadMs);
+  return minMs + Math.random() * (maxMs - minMs);
 }
 
 /**
@@ -37,7 +34,7 @@ function randomInterval(tier: keyof typeof TIER_CONFIG): number {
  *
  * 与固定间隔倒计时的区别：
  *  1. 总数可手动输入或从区间随机抽取
- *  2. 每次递减间隔随机生成，仅受挡位上下限约束
+ *  2. 每次递减间隔随机生成，在用户输入频率的 ±50% 范围内
  */
 export function useRandomCountdown(settings: Settings): RandomCountdownReturn {
   const [status, setStatus] = useState<AppStatus>('idle');
@@ -111,8 +108,8 @@ export function useRandomCountdown(settings: Settings): RandomCountdownReturn {
       return;
     }
 
-    // 下一 tick 使用随机间隔
-    const delay = randomInterval(s.randomTier);
+    // 下一 tick 使用随机间隔（基于用户输入的频率）
+    const delay = randomInterval(s.randomFrequency);
     timerRef.current = window.setTimeout(() => tickRef.current(), delay);
   }, [addLog]);
 
@@ -129,10 +126,11 @@ export function useRandomCountdown(settings: Settings): RandomCountdownReturn {
     setStatus('listening');
 
     const s = settingsRef.current;
-    const tier = TIER_CONFIG[s.randomTier];
+    const centerMs = s.randomFrequency * 1000;
+    const spreadMs = centerMs * 0.5;
     addLog(
       `随机倒计时开始 — 总数 ${newTotal}` +
-      `，挡位 ${tier.label}（${tier.minMs}–${tier.maxMs}ms）`,
+      `，频率 ${s.randomFrequency.toFixed(1)}s（${(centerMs - spreadMs).toFixed(0)}–${(centerMs + spreadMs).toFixed(0)}ms）`,
     );
 
     tickRef.current();

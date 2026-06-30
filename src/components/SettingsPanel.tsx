@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import type { Settings, SoundType, CountdownMode, RandomTotalMode, RandomTier } from '../types';
+import type { Settings, SoundType, CountdownMode, RandomTotalMode } from '../types';
 import './SettingsPanel.css';
 
 interface Props {
@@ -31,6 +31,7 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
   const [localRandomManual, setLocalRandomManual] = useState(String(settings.randomTotalManual));
   const [localRandomMin, setLocalRandomMin] = useState(String(settings.randomRangeMin));
   const [localRandomMax, setLocalRandomMax] = useState(String(settings.randomRangeMax));
+  const [localFrequency, setLocalFrequency] = useState(String(settings.randomFrequency));
 
   // 同步外部 settings 变化
   useEffect(() => { setLocalThreshold(String(settings.threshold)); }, [settings.threshold]);
@@ -42,6 +43,7 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
   useEffect(() => { setLocalRandomManual(String(settings.randomTotalManual)); }, [settings.randomTotalManual]);
   useEffect(() => { setLocalRandomMin(String(settings.randomRangeMin)); }, [settings.randomRangeMin]);
   useEffect(() => { setLocalRandomMax(String(settings.randomRangeMax)); }, [settings.randomRangeMax]);
+  useEffect(() => { setLocalFrequency(String(settings.randomFrequency)); }, [settings.randomFrequency]);
 
   const handleThresholdBlur = useCallback(() => {
     const cleaned = stripLeadingZeros(localThreshold);
@@ -105,6 +107,13 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
     setLocalRandomMax(String(num));
     onChange({ ...settings, randomRangeMax: num });
   }, [localRandomMax, settings, onChange]);
+
+  const handleFrequencyBlur = useCallback(() => {
+    const cleaned = stripLeadingZeros(localFrequency);
+    const num = Math.max(0.1, Math.min(10, Number(cleaned) || 2));
+    setLocalFrequency(String(num));
+    onChange({ ...settings, randomFrequency: num });
+  }, [localFrequency, settings, onChange]);
 
   const isCountdown = settings.mode === 'countdown';
 
@@ -223,25 +232,20 @@ export function SettingsPanel({ settings, baseline, onChange, onCalibrate, disab
                 </label>
               )}
 
-              {/* 频率挡位 */}
-              <div className="sp-section-label">频率挡位</div>
-              <div className="sp-tier-tabs">
-                {([
-                  ['low', '低', '2–10s'],
-                  ['mid', '中', '0.5–5s'],
-                  ['high', '高', '0.1–2s'],
-                ] as const).map(([key, label, range]) => (
-                  <button
-                    key={key}
-                    className={`sp-tier-tab ${settings.randomTier === key ? 'active' : ''}`}
-                    onClick={() => onChange({ ...settings, randomTier: key as RandomTier })}
-                    disabled={disabled}
-                  >
-                    <span className="sp-tier-label">{label}</span>
-                    <span className="sp-tier-range">{range}</span>
-                  </button>
-                ))}
-              </div>
+              {/* 随机频率 */}
+              <label className="sp-field">
+                <span>随机频率 (秒)</span>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  pattern="[0-9.]*"
+                  value={localFrequency}
+                  onChange={(e) => setLocalFrequency(e.target.value)}
+                  onBlur={handleFrequencyBlur}
+                  disabled={disabled}
+                  placeholder="0.1–10"
+                />
+              </label>
             </>
           )}
 

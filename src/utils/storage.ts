@@ -19,7 +19,7 @@ const DEFAULT_SETTINGS: Settings = {
   randomTotalManual: 10,
   randomRangeMin: 5,
   randomRangeMax: 20,
-  randomTier: 'mid',
+  randomFrequency: 2,
   soundType: 'beep',
   soundVolume: 0.5,
   visualEffect: 'none',

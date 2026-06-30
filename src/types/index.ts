@@ -13,8 +13,8 @@ export type CountdownMode = 'fixed' | 'random';
 /** 随机倒计数 — 总数来源 */
 export type RandomTotalMode = 'manual' | 'range';
 
-/** 随机倒计数 — 频率挡位 */
-export type RandomTier = 'low' | 'mid' | 'high';
+/** 随机倒计数 — 用户输入频率（秒） */
+// 已移除 RandomTier 挡位，改为自由输入频率值
 
 /** 计数记录 */
 export interface CountRecord {
@@ -47,7 +47,7 @@ export interface Settings {
   randomTotalManual: number;        // 手动输入总数
   randomRangeMin: number;           // 随机区间下限
   randomRangeMax: number;           // 随机区间上限
-  randomTier: RandomTier;           // 频率挡位
+  randomFrequency: number;          // 随机频率（秒），实际间隔在 ±50% 范围内随机
   soundType: SoundType;             // 提示音类型
   soundVolume: number;              // 提示音音量 0-1
   // 通用
