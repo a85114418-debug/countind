@@ -7,13 +7,11 @@ interface Props {
   reverse?: boolean; // 逆时针进度（倒计时用）
 }
 
-/** Google 四色渐变 */
-const GOOGLE_COLORS = [
-  { offset: '0%', color: '#4285F4' },
-  { offset: '25%', color: '#EA4335' },
-  { offset: '50%', color: '#FBBC05' },
-  { offset: '75%', color: '#34A853' },
-  { offset: '100%', color: '#4285F4' },
+/** Claude 暖色渐变: 珊瑚 → 茶绿 → 珊瑚 */
+const DIAL_GRADIENT = [
+  { offset: '0%', color: '#cc785c' },
+  { offset: '50%', color: '#5db8a6' },
+  { offset: '100%', color: '#cc785c' },
 ];
 
 export function CounterDial({ count, target, isFlashing, reverse = false }: Props) {
@@ -28,8 +26,8 @@ export function CounterDial({ count, target, isFlashing, reverse = false }: Prop
     <div className={`counter-dial ${isFlashing ? 'flash' : ''}`}>
       <svg viewBox="0 0 200 200" className="dial-svg">
         <defs>
-          <linearGradient id="google-rainbow" x1="0%" y1="0%" x2="100%" y2="100%">
-            {GOOGLE_COLORS.map((stop) => (
+          <linearGradient id="dial-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            {DIAL_GRADIENT.map((stop) => (
               <stop key={stop.offset} offset={stop.offset} stopColor={stop.color} />
             ))}
           </linearGradient>
@@ -38,15 +36,15 @@ export function CounterDial({ count, target, isFlashing, reverse = false }: Prop
         <circle
           cx="100" cy="100" r={r}
           fill="none"
-          stroke="rgba(255,255,255,0.06)"
+          stroke="var(--hairline)"
           strokeWidth="5"
         />
-        {/* 进度圆环 — Google 彩虹渐变 */}
+        {/* 进度圆环 — Claude 暖色渐变 */}
         {hasTarget && (
           <circle
             cx="100" cy="100" r={r}
             fill="none"
-            stroke="url(#google-rainbow)"
+            stroke="url(#dial-gradient)"
             strokeWidth="5"
             strokeLinecap="round"
             strokeDasharray={circumference}

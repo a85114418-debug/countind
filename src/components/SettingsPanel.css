@@ -3,11 +3,11 @@
 }
 
 .sp-title {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  color: var(--muted);
   margin-bottom: 12px;
   font-weight: 500;
-  letter-spacing: 2px;
+  letter-spacing: 0;
 }
 
 .sp-field {
@@ -16,28 +16,25 @@
   justify-content: space-between;
   margin-bottom: 10px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--body);
 }
 
 .sp-field input {
   width: 80px;
-  padding: 6px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 8px 10px;
+  border: 1px solid var(--hairline);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: #fff;
+  background: var(--canvas);
+  color: var(--ink);
   font-size: 14px;
   text-align: center;
   font-family: inherit;
   outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: border-color 0.25s;
 }
 
 .sp-field input:focus {
-  border-color: var(--g-blue, #4285F4);
-  box-shadow: 0 0 12px rgba(66,133,244,0.2);
+  border-color: var(--coral);
 }
 
 .sp-field input:disabled {
@@ -46,15 +43,12 @@
 
 .sp-baseline {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--muted);
   margin: 8px 0;
 }
 
 .sp-baseline strong {
-  background: linear-gradient(135deg, #4285F4, #34A853);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--coral);
   font-weight: 600;
 }
 
@@ -62,21 +56,21 @@
   width: 100%;
   padding: 8px;
   margin-top: 6px;
-  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--hairline);
   border-radius: 8px;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.55);
+  background: var(--canvas);
+  color: var(--muted);
   font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.3s;
+  transition: all 0.25s;
 }
 
 .sp-calibrate-btn:hover:not(:disabled) {
-  border-color: var(--g-blue, #4285F4);
-  color: #fff;
-  box-shadow: 0 0 16px rgba(66,133,244,0.15);
-  background: rgba(66,133,244,0.06);
+  border-color: var(--coral);
+  color: var(--coral);
+  background: rgba(204, 120, 92, 0.06);
 }
 
 .sp-calibrate-btn:disabled {
@@ -88,26 +82,25 @@
 .sp-select {
   width: 120px;
   padding: 6px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--hairline);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  color: #fff;
+  background: var(--canvas);
+  color: var(--ink);
   font-size: 14px;
   font-family: inherit;
   outline: none;
   cursor: pointer;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: border-color 0.25s;
   -webkit-appearance: none;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.4)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236c6a64'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center;
   padding-right: 28px;
 }
 
 .sp-select:focus {
-  border-color: var(--g-blue, #4285F4);
-  box-shadow: 0 0 12px rgba(66,133,244,0.2);
+  border-color: var(--coral);
 }
 
 .sp-select:disabled {
@@ -116,8 +109,8 @@
 }
 
 .sp-select option {
-  background: #1a1a2e;
-  color: #fff;
+  background: var(--canvas);
+  color: var(--ink);
 }
 
 .sp-slider {
@@ -126,7 +119,7 @@
   height: 4px;
   -webkit-appearance: none;
   appearance: none;
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--hairline);
   border-radius: 2px;
   outline: none;
   cursor: pointer;
@@ -137,9 +130,8 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4285F4, #34A853);
-  border: 2px solid rgba(255,255,255,0.2);
-  box-shadow: 0 0 12px rgba(66,133,244,0.3);
+  background: var(--coral);
+  border: 2px solid var(--canvas);
   cursor: pointer;
 }
 
@@ -147,9 +139,8 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4285F4, #34A853);
-  border: 2px solid rgba(255,255,255,0.2);
-  box-shadow: 0 0 12px rgba(66,133,244,0.3);
+  background: var(--coral);
+  border: 2px solid var(--canvas);
   cursor: pointer;
 }
 
@@ -160,7 +151,7 @@
 
 .sp-slider-val {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--muted);
   min-width: 36px;
   text-align: right;
 }
@@ -175,26 +166,27 @@
 .sp-submode-tab {
   flex: 1;
   padding: 7px 0;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.03);
-  color: rgba(255, 255, 255, 0.45);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  background: var(--canvas);
+  color: var(--muted);
   font-size: 13px;
+  font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.25s;
 }
 
 .sp-submode-tab:hover:not(:disabled) {
-  border-color: rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.75);
+  border-color: var(--coral-disabled);
+  color: var(--ink);
+  background: var(--surface-soft);
 }
 
 .sp-submode-tab.active {
-  border-color: rgba(234, 67, 53, 0.5);
-  background: rgba(234, 67, 53, 0.12);
-  color: #fff;
-  box-shadow: 0 0 16px rgba(234, 67, 53, 0.15);
+  border-color: var(--coral);
+  background: rgba(204, 120, 92, 0.08);
+  color: var(--coral);
 }
 
 .sp-submode-tab:disabled {
@@ -205,9 +197,10 @@
 /* === 小节标签 === */
 .sp-section-label {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--muted-soft);
   margin-bottom: 6px;
-  letter-spacing: 2px;
+  letter-spacing: 0;
+  font-weight: 500;
 }
 
 /* === 总数来源切换 === */
@@ -220,26 +213,27 @@
 .sp-totalmode-tab {
   flex: 1;
   padding: 6px 0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--hairline);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.02);
-  color: rgba(255, 255, 255, 0.4);
+  background: var(--canvas);
+  color: var(--muted);
   font-size: 12px;
+  font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.25s;
 }
 
 .sp-totalmode-tab:hover:not(:disabled) {
-  border-color: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.7);
+  border-color: var(--coral-disabled);
+  color: var(--ink);
+  background: var(--surface-soft);
 }
 
 .sp-totalmode-tab.active {
-  border-color: rgba(66, 133, 244, 0.5);
-  background: rgba(66, 133, 244, 0.1);
-  color: #fff;
-  box-shadow: 0 0 12px rgba(66, 133, 244, 0.12);
+  border-color: var(--coral);
+  background: rgba(204, 120, 92, 0.08);
+  color: var(--coral);
 }
 
 .sp-totalmode-tab:disabled {
@@ -257,20 +251,19 @@
 .sp-range-row input {
   width: 64px !important;
   padding: 6px 8px !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid var(--hairline) !important;
   border-radius: 8px !important;
-  background: rgba(255, 255, 255, 0.04) !important;
-  color: #fff !important;
+  background: var(--canvas) !important;
+  color: var(--ink) !important;
   font-size: 14px !important;
   text-align: center !important;
   font-family: inherit !important;
   outline: none !important;
-  transition: border-color 0.3s, box-shadow 0.3s !important;
+  transition: border-color 0.25s !important;
 }
 
 .sp-range-row input:focus {
-  border-color: var(--g-blue, #4285F4) !important;
-  box-shadow: 0 0 12px rgba(66, 133, 244, 0.2) !important;
+  border-color: var(--coral) !important;
 }
 
 .sp-range-row input:disabled {
@@ -278,7 +271,7 @@
 }
 
 .sp-range-sep {
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--muted);
   font-size: 14px;
 }
 
@@ -296,43 +289,43 @@
   align-items: center;
   gap: 2px;
   padding: 8px 4px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  background: var(--canvas);
   font-family: inherit;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.25s;
 }
 
 .sp-tier-tab:hover:not(:disabled) {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: var(--coral-disabled);
+  background: var(--surface-soft);
 }
 
 .sp-tier-label {
   font-size: 15px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.55);
-  transition: color 0.3s;
+  color: var(--muted);
+  transition: color 0.25s;
 }
 
 .sp-tier-range {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.3);
-  transition: color 0.3s;
+  color: var(--muted-soft);
+  transition: color 0.25s;
 }
 
 .sp-tier-tab.active {
-  border-color: rgba(251, 188, 5, 0.5);
-  background: rgba(251, 188, 5, 0.1);
-  box-shadow: 0 0 14px rgba(251, 188, 5, 0.12);
+  border-color: var(--accent-amber);
+  background: rgba(232, 165, 90, 0.1);
 }
 
 .sp-tier-tab.active .sp-tier-label {
-  color: #FBBC05;
+  color: var(--accent-amber);
 }
 
 .sp-tier-tab.active .sp-tier-range {
-  color: rgba(251, 188, 5, 0.6);
+  color: var(--accent-amber);
 }
 
 .sp-tier-tab:disabled {

@@ -4,32 +4,32 @@
 }
 
 .dp-title {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  color: var(--muted);
   margin-bottom: 10px;
   font-weight: 500;
-  letter-spacing: 2px;
+  letter-spacing: 0;
 }
 
 .dp-status-row {
   margin-bottom: 6px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--body);
 }
 
 .dp-status {
-  font-weight: 700;
+  font-weight: 500;
   padding: 2px 10px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 12px;
 }
 
-.dp-idle       { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
-.dp-listening  { background: rgba(66,133,244,0.2); color: #6aadff; }
-.dp-paused     { background: rgba(251,188,5,0.15); color: #FBBC05; }
-.dp-finished   { background: rgba(52,168,83,0.15); color: #34A853; }
+.dp-idle       { background: var(--hairline); color: var(--muted-soft); }
+.dp-listening  { background: rgba(204, 120, 92, 0.12); color: var(--coral); }
+.dp-paused     { background: rgba(232, 165, 90, 0.12); color: var(--accent-amber); }
+.dp-finished   { background: rgba(93, 184, 114, 0.12); color: var(--success); }
 
 .dp-info {
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--muted);
   font-size: 12px;
   margin-bottom: 14px;
   font-variant-numeric: tabular-nums;
@@ -44,7 +44,7 @@
 }
 
 .dp-sim-label {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--muted);
   font-size: 13px;
   display: flex;
   align-items: center;
@@ -56,14 +56,11 @@
 .dp-slider {
   flex: 1;
   min-width: 80px;
-  accent-color: var(--g-blue, #4285F4);
+  accent-color: var(--coral);
 }
 
 .dp-sim-val {
-  background: linear-gradient(135deg, #4285F4, #34A853);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--coral);
   font-weight: 600;
   min-width: 42px;
   font-size: 12px;
@@ -71,21 +68,21 @@
 
 .dp-logs-title {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--muted);
   margin-bottom: 6px;
 }
 
 .dp-logs-list {
   max-height: 160px;
   overflow-y: auto;
-  background: rgba(0, 0, 0, 0.25);
+  background: var(--canvas);
   border-radius: 8px;
   padding: 6px;
-  border: 1px solid rgba(255,255,255,0.04);
+  border: 1px solid var(--hairline);
 }
 
 .dp-no-logs {
-  color: rgba(255, 255, 255, 0.2);
+  color: var(--muted-soft);
   font-size: 12px;
   text-align: center;
   padding: 10px;
@@ -100,10 +97,10 @@
 }
 
 .dp-log-time {
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--muted-soft);
   margin-right: 6px;
 }
 
-.dp-log-info { color: rgba(255, 255, 255, 0.55); }
-.dp-log-warn { color: #FBBC05; }
-.dp-log-error { color: #EA4335; }
+.dp-log-info { color: var(--muted); }
+.dp-log-warn { color: var(--accent-amber); }
+.dp-log-error { color: var(--error); }
