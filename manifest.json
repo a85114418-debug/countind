@@ -1,0 +1,24 @@
+{
+  "name": "CountinD",
+  "short_name": "CountinD",
+  "description": "声控计数器 - 检测环境音量并自动计数",
+  "start_url": ".",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#06081a",
+  "theme_color": "#06081a",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
