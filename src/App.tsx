@@ -106,18 +106,22 @@ export default function App() {
     }
   }, []);
 
-  // 方向管理：所有设备强制竖屏
+  // 方向管理：移动端强制竖屏，桌面端自由
   useEffect(() => {
     const checkOrientation = () => {
+      // 检测是否为移动设备（屏幕宽度 < 1024px 视为移动设备）
+      const isMobile = window.innerWidth < 1024;
       const isLandscape = window.innerWidth > window.innerHeight;
-      // 横屏时显示遮罩
-      setOrientationBlocked(isLandscape);
+
+      // 仅在移动设备横屏时显示遮罩
+      setOrientationBlocked(isMobile && isLandscape);
     };
     checkOrientation();
     window.addEventListener('resize', checkOrientation);
 
-    // 尝试锁定竖屏（仅移动端浏览器支持）
-    if ('orientation' in screen && typeof (screen.orientation as any).lock === 'function') {
+    // 尝试锁定竖屏（仅移动端浏览器支持，且仅在移动设备上执行）
+    const isMobile = window.innerWidth < 1024;
+    if (isMobile && 'orientation' in screen && typeof (screen.orientation as any).lock === 'function') {
       (screen.orientation as any).lock('portrait').catch(() => {});
     }
 
