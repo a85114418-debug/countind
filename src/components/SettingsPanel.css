@@ -3,38 +3,40 @@
 }
 
 .sp-title {
-  font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 12px;
-  font-weight: 500;
-  letter-spacing: 0;
+  font-size: 14px;
+  color: var(--warm-gray);
+  margin-bottom: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .sp-field {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-size: 14px;
-  color: var(--body);
+  color: var(--dark-wood);
 }
 
 .sp-field input {
   width: 80px;
-  padding: 8px 10px;
-  border: 1px solid var(--hairline);
-  border-radius: 8px;
-  background: var(--canvas);
-  color: var(--ink);
+  padding: 9px 12px;
+  border: 2px solid var(--hairline-warm);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--dark-wood);
   font-size: 14px;
   text-align: center;
   font-family: inherit;
   outline: none;
-  transition: border-color 0.25s;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
 .sp-field input:focus {
-  border-color: var(--coral);
+  border-color: var(--walnut);
+  box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
 }
 
 .sp-field input:disabled {
@@ -43,34 +45,37 @@
 
 .sp-baseline {
   font-size: 13px;
-  color: var(--muted);
-  margin: 8px 0;
+  color: var(--warm-gray);
+  margin: 10px 0;
 }
 
 .sp-baseline strong {
-  color: var(--coral);
+  color: var(--walnut);
   font-weight: 600;
 }
 
 .sp-calibrate-btn {
   width: 100%;
-  padding: 8px;
-  margin-top: 6px;
-  border: 1px solid var(--hairline);
-  border-radius: 8px;
-  background: var(--canvas);
-  color: var(--muted);
-  font-size: 13px;
+  padding: 10px;
+  margin-top: 8px;
+  border: 2px solid var(--hairline-warm);
+  border-radius: 14px;
+  background: linear-gradient(to bottom, var(--light-wood-soft), var(--light-wood));
+  color: var(--warm-gray);
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.25s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px var(--shadow-soft);
 }
 
 .sp-calibrate-btn:hover:not(:disabled) {
-  border-color: var(--coral);
-  color: var(--coral);
-  background: rgba(204, 120, 92, 0.06);
+  border-color: var(--walnut);
+  color: var(--walnut);
+  background: linear-gradient(to bottom, #fff, var(--light-wood-soft));
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px var(--shadow-warm);
 }
 
 .sp-calibrate-btn:disabled {
@@ -81,26 +86,28 @@
 /* === 倒计时设置专属样式 === */
 .sp-select {
   width: 120px;
-  padding: 6px 10px;
-  border: 1px solid var(--hairline);
-  border-radius: 8px;
-  background: var(--canvas);
-  color: var(--ink);
+  padding: 8px 12px;
+  border: 2px solid var(--hairline-warm);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--dark-wood);
   font-size: 14px;
   font-family: inherit;
   outline: none;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.3s ease;
   -webkit-appearance: none;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236c6a64'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23C4B5A0'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 28px;
+  background-position: right 12px center;
+  padding-right: 32px;
+  font-weight: 500;
 }
 
 .sp-select:focus {
-  border-color: var(--coral);
+  border-color: var(--walnut);
+  box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
 }
 
 .sp-select:disabled {
@@ -109,39 +116,41 @@
 }
 
 .sp-select option {
-  background: var(--canvas);
-  color: var(--ink);
+  background: var(--paper);
+  color: var(--dark-wood);
 }
 
 .sp-slider {
   flex: 1;
   max-width: 100px;
-  height: 4px;
+  height: 6px;
   -webkit-appearance: none;
   appearance: none;
-  background: var(--hairline);
-  border-radius: 2px;
+  background: var(--hairline-warm);
+  border-radius: 3px;
   outline: none;
   cursor: pointer;
 }
 
 .sp-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: var(--coral);
-  border: 2px solid var(--canvas);
+  background: linear-gradient(to bottom, var(--walnut), var(--walnut-dark));
+  border: 3px solid var(--paper);
   cursor: pointer;
+  box-shadow: 0 2px 6px var(--shadow-warm);
 }
 
 .sp-slider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: var(--coral);
-  border: 2px solid var(--canvas);
+  background: linear-gradient(to bottom, var(--walnut), var(--walnut-dark));
+  border: 3px solid var(--paper);
   cursor: pointer;
+  box-shadow: 0 2px 6px var(--shadow-warm);
 }
 
 .sp-slider:disabled {
@@ -150,43 +159,47 @@
 }
 
 .sp-slider-val {
-  font-size: 13px;
-  color: var(--muted);
+  font-size: 14px;
+  color: var(--warm-gray);
   min-width: 36px;
   text-align: right;
+  font-weight: 500;
 }
 
 /* === 倒计数子模式切换标签 === */
 .sp-submode-tabs {
   display: flex;
-  gap: 6px;
-  margin-bottom: 14px;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .sp-submode-tab {
   flex: 1;
-  padding: 7px 0;
-  border: 1px solid var(--hairline);
-  border-radius: 8px;
-  background: var(--canvas);
-  color: var(--muted);
+  padding: 9px 0;
+  border: 2px solid var(--hairline-warm);
+  border-radius: 12px;
+  background: var(--light-wood-soft);
+  color: var(--warm-gray);
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: all 0.25s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px var(--shadow-soft);
 }
 
 .sp-submode-tab:hover:not(:disabled) {
-  border-color: var(--coral-disabled);
-  color: var(--ink);
-  background: var(--surface-soft);
+  border-color: var(--walnut-light);
+  color: var(--dark-wood);
+  background: var(--light-wood);
+  transform: translateY(-1px);
 }
 
 .sp-submode-tab.active {
-  border-color: var(--coral);
-  background: rgba(204, 120, 92, 0.08);
-  color: var(--coral);
+  border-color: var(--walnut);
+  background: var(--walnut);
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(139, 111, 71, 0.3);
 }
 
 .sp-submode-tab:disabled {
@@ -197,43 +210,45 @@
 /* === 小节标签 === */
 .sp-section-label {
   font-size: 12px;
-  color: var(--muted-soft);
-  margin-bottom: 6px;
-  letter-spacing: 0;
-  font-weight: 500;
+  color: var(--warm-gray-soft);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 /* === 总数来源切换 === */
 .sp-totalmode-tabs {
   display: flex;
   gap: 6px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .sp-totalmode-tab {
   flex: 1;
-  padding: 6px 0;
-  border: 1px solid var(--hairline);
-  border-radius: 8px;
-  background: var(--canvas);
-  color: var(--muted);
+  padding: 7px 0;
+  border: 2px solid var(--hairline-warm);
+  border-radius: 10px;
+  background: var(--light-wood-soft);
+  color: var(--warm-gray);
   font-size: 12px;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: all 0.25s;
+  transition: all 0.3s ease;
 }
 
 .sp-totalmode-tab:hover:not(:disabled) {
-  border-color: var(--coral-disabled);
-  color: var(--ink);
-  background: var(--surface-soft);
+  border-color: var(--walnut-light);
+  color: var(--dark-wood);
+  background: var(--light-wood);
 }
 
 .sp-totalmode-tab.active {
-  border-color: var(--coral);
-  background: rgba(204, 120, 92, 0.08);
-  color: var(--coral);
+  border-color: var(--walnut);
+  background: var(--walnut);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(139, 111, 71, 0.25);
 }
 
 .sp-totalmode-tab:disabled {
@@ -245,25 +260,27 @@
 .sp-range-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .sp-range-row input {
-  width: 64px !important;
-  padding: 6px 8px !important;
-  border: 1px solid var(--hairline) !important;
-  border-radius: 8px !important;
-  background: var(--canvas) !important;
-  color: var(--ink) !important;
+  width: 68px !important;
+  padding: 8px 10px !important;
+  border: 2px solid var(--hairline-warm) !important;
+  border-radius: 12px !important;
+  background: var(--paper) !important;
+  color: var(--dark-wood) !important;
   font-size: 14px !important;
   text-align: center !important;
   font-family: inherit !important;
   outline: none !important;
-  transition: border-color 0.25s !important;
+  transition: all 0.3s ease !important;
+  font-weight: 500 !important;
 }
 
 .sp-range-row input:focus {
-  border-color: var(--coral) !important;
+  border-color: var(--walnut) !important;
+  box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1) !important;
 }
 
 .sp-range-row input:disabled {
@@ -271,8 +288,7 @@
 }
 
 .sp-range-sep {
-  color: var(--muted);
+  color: var(--warm-gray);
   font-size: 14px;
+  font-weight: 500;
 }
-
-/* === 频率选择已改为自由输入（见 .sp-field input） === */

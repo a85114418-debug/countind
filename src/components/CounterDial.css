@@ -4,40 +4,48 @@
   height: 220px;
   margin: 0 auto;
   border-radius: 50%;
-  background: var(--canvas);
-  border: 2px solid var(--hairline);
+  background: linear-gradient(135deg, var(--light-wood-soft) 0%, var(--light-wood) 100%);
+  border: 3px solid var(--hairline-warm);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: all 0.4s ease;
   user-select: none;
+  box-shadow:
+    0 4px 12px var(--shadow-warm),
+    inset 0 2px 4px rgba(255,255,255,0.6),
+    inset 0 -2px 4px var(--shadow-soft);
 }
 
-/* 触发时珊瑚微闪 */
+/* 触发时木质温暖闪光 */
 .counter-dial.flash {
-  border-color: var(--coral);
-  box-shadow: 0 0 0 4px rgba(204, 120, 92, 0.12);
-  animation: flash-pulse 0.3s ease-out;
+  border-color: var(--walnut);
+  box-shadow:
+    0 6px 20px rgba(139, 111, 71, 0.4),
+    0 0 0 6px rgba(139, 111, 71, 0.15),
+    inset 0 2px 4px rgba(255,255,255,0.7);
+  animation: flash-pulse 0.4s ease-out;
 }
 
 @keyframes flash-pulse {
   0% { transform: scale(1); }
-  50% { transform: scale(1.02); }
+  50% { transform: scale(1.03); }
   100% { transform: scale(1); }
 }
 
 .dial-svg {
   position: absolute;
   inset: 0;
+  filter: drop-shadow(0 2px 4px var(--shadow-soft));
 }
 
 .progress-ring {
-  transition: stroke-dashoffset 0.35s ease;
+  transition: stroke-dashoffset 0.4s ease;
 }
 
 .counter-dial.flash .progress-ring {
-  filter: brightness(1.2) saturate(1.3);
+  filter: brightness(1.15) saturate(1.2) drop-shadow(0 0 8px currentColor);
 }
 
 .dial-number {
@@ -45,23 +53,27 @@
   z-index: 1;
   font-family: 'Cormorant Garamond', 'Times New Roman', serif;
   font-size: 64px;
-  font-weight: 500;
-  color: var(--ink);
+  font-weight: 600;
+  color: var(--dark-wood);
   line-height: 1;
-  transition: color 0.15s;
+  transition: all 0.3s ease;
+  text-shadow: 0 2px 4px var(--shadow-soft);
 }
 
 .counter-dial.flash .dial-number {
-  color: var(--coral);
+  color: var(--walnut);
+  text-shadow: 0 2px 8px rgba(139, 111, 71, 0.4);
+  transform: scale(1.05);
 }
 
 .dial-target {
   position: relative;
   z-index: 1;
   font-size: 15px;
-  color: var(--muted);
-  margin-top: 2px;
+  color: var(--warm-gray);
+  margin-top: 4px;
   font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
 /* 平板 */

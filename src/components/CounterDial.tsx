@@ -7,11 +7,11 @@ interface Props {
   reverse?: boolean; // 逆时针进度（倒计时用）
 }
 
-/** Claude 暖色渐变: 珊瑚 → 茶绿 → 珊瑚 */
+/** 温暖手工渐变: 深棕 → 木质暖棕 → 琥珀橙 */
 const DIAL_GRADIENT = [
-  { offset: '0%', color: '#cc785c' },
-  { offset: '50%', color: '#5db8a6' },
-  { offset: '100%', color: '#cc785c' },
+  { offset: '0%', color: '#6B5437' },
+  { offset: '50%', color: '#8B6F47' },
+  { offset: '100%', color: '#D4875C' },
 ];
 
 export function CounterDial({ count, target, isFlashing, reverse = false }: Props) {
@@ -36,16 +36,16 @@ export function CounterDial({ count, target, isFlashing, reverse = false }: Prop
         <circle
           cx="100" cy="100" r={r}
           fill="none"
-          stroke="var(--hairline)"
-          strokeWidth="5"
+          stroke="var(--hairline-warm)"
+          strokeWidth="6"
         />
-        {/* 进度圆环 — Claude 暖色渐变 */}
+        {/* 进度圆环 — 温暖手工渐变 */}
         {hasTarget && (
           <circle
             cx="100" cy="100" r={r}
             fill="none"
             stroke="url(#dial-gradient)"
-            strokeWidth="5"
+            strokeWidth="6"
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={dashOffset}
