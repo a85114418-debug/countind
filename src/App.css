@@ -1,27 +1,49 @@
-/* === 温暖手工色彩变量 === */
+/* === Liquid Glass 色彩变量 === */
 :root {
-  --walnut: #8B6F47;
-  --walnut-dark: #6B5437;
-  --walnut-light: #A58A63;
-  --dark-wood: #2A1810;
-  --paper: #F8F4ED;
-  --amber: #D4875C;
-  --patina: #7A9B76;
-  --warm-gray: #C4B5A0;
-  --warm-gray-soft: #D4C8B8;
-  --light-wood: #E8DCC8;
-  --light-wood-soft: #F0E8D8;
-  --hairline-warm: #D8CDB8;
-  --shadow-warm: rgba(42, 24, 16, 0.12);
-  --shadow-soft: rgba(42, 24, 16, 0.06);
+  /* 主强调色 — 冰蓝 */
+  --accent: #7EB8DA;
+  --accent-glow: #A0D2F0;
+  --accent-dim: #5A9AB8;
+
+  /* 状态色 */
+  --coral: #E8A87C;
+  --coral-glow: #F0C4A0;
+  --mint: #8EC8A0;
+  --mint-glow: #A8D8B6;
+
+  /* 玻璃表面 */
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-bg-hover: rgba(255, 255, 255, 0.07);
+  --glass-bg-active: rgba(255, 255, 255, 0.10);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(255, 255, 255, 0.14);
+  --glass-border-active: rgba(126, 184, 218, 0.35);
+  --glass-highlight: rgba(255, 255, 255, 0.06);
+
+  /* 文字 */
+  --text-primary: rgba(255, 255, 255, 0.92);
+  --text-secondary: rgba(255, 255, 255, 0.55);
+  --text-tertiary: rgba(255, 255, 255, 0.32);
+
+  /* 深度阴影 */
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.25);
+  --shadow-glass-sm: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --shadow-glow: 0 0 20px rgba(126, 184, 218, 0.2);
+  --shadow-glow-strong: 0 0 32px rgba(126, 184, 218, 0.35);
+
+  /* 背景层 */
+  --bg-deep: #0a0a1a;
+  --bg-mid: #12102a;
+  --bg-pool-1: rgba(100, 140, 180, 0.06);
+  --bg-pool-2: rgba(140, 100, 180, 0.04);
 }
 
-/* === 横屏遮罩：强制竖屏使用 === */
+/* === 横屏遮罩 === */
 .rotate-overlay {
   position: fixed;
   inset: 0;
   z-index: 99999;
-  background: var(--paper);
+  background: var(--bg-deep);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,13 +65,13 @@
   font-family: 'Cormorant Garamond', 'Times New Roman', serif;
   font-size: 28px;
   font-weight: 500;
-  color: var(--dark-wood);
+  color: var(--text-primary);
   letter-spacing: -0.3px;
 }
 
 .rotate-sub {
   font-size: 13px;
-  color: var(--warm-gray);
+  color: var(--text-secondary);
   letter-spacing: 1px;
 }
 
@@ -64,13 +86,26 @@ html, body, #root {
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
     "Microsoft YaHei", sans-serif;
-  background: var(--paper);
-  color: var(--dark-wood);
+  background: var(--bg-deep);
+  color: var(--text-primary);
   -webkit-tap-highlight-color: transparent;
   -webkit-font-smoothing: antialiased;
 }
 
-/* === App 布局（移动端默认）=== */
+/* 背景深度光池 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 30% 10%, var(--bg-pool-1), transparent),
+    radial-gradient(ellipse 60% 50% at 70% 80%, var(--bg-pool-2), transparent),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(126, 184, 218, 0.04), transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* === App 布局 === */
 .app {
   position: relative;
   min-height: 100%;
@@ -88,21 +123,20 @@ body {
   position: relative;
 }
 
-/* 手工感标题 */
 .app-header h1 {
   font-family: 'Cormorant Garamond', 'Times New Roman', serif;
   font-size: 32px;
   font-weight: 600;
-  color: var(--dark-wood);
-  letter-spacing: 1px;
+  color: var(--text-primary);
+  letter-spacing: 2px;
   margin-bottom: 6px;
   line-height: 1.15;
-  text-shadow: 0 1px 2px var(--shadow-soft);
+  text-shadow: 0 0 40px rgba(126, 184, 218, 0.15);
 }
 
 .header-status {
   font-size: 13px;
-  color: var(--warm-gray);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -119,32 +153,34 @@ body {
   align-items: center;
   gap: 6px;
   padding: 8px 18px;
-  border: 2px solid var(--hairline-warm);
+  border: 1px solid var(--glass-border);
   border-radius: 16px;
-  background: var(--light-wood-soft);
-  color: var(--warm-gray);
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--text-secondary);
   font-size: 14px;
   font-family: inherit;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.35s ease;
   -webkit-tap-highlight-color: transparent;
-  box-shadow: 0 2px 4px var(--shadow-soft);
+  box-shadow: var(--shadow-glass-sm);
 }
 
 .mode-tab:hover {
-  border-color: var(--walnut-light);
-  color: var(--dark-wood);
-  background: var(--light-wood);
+  border-color: var(--glass-border-hover);
+  color: var(--text-primary);
+  background: var(--glass-bg-hover);
   transform: translateY(-1px);
-  box-shadow: 0 3px 8px var(--shadow-warm);
+  box-shadow: var(--shadow-glass);
 }
 
 .mode-tab.active {
-  border-color: var(--walnut);
-  background: var(--walnut);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(139, 111, 71, 0.3), inset 0 1px 2px rgba(255,255,255,0.2);
+  border-color: var(--glass-border-active);
+  background: rgba(126, 184, 218, 0.12);
+  color: var(--accent-glow);
+  box-shadow: var(--shadow-glass), var(--shadow-glow);
 }
 
 .mode-tab-icon { font-size: 17px; }
@@ -157,17 +193,17 @@ body {
   border-radius: 50%;
   margin-right: 3px;
   vertical-align: middle;
-  box-shadow: 0 0 4px currentColor;
+  box-shadow: 0 0 6px currentColor;
 }
 
-.status-idle       { background: var(--warm-gray); }
-.status-listening  { background: var(--walnut); animation: dot-pulse 1.5s ease-in-out infinite; }
-.status-paused     { background: var(--amber); }
-.status-finished   { background: var(--patina); }
+.status-idle       { background: var(--text-tertiary); }
+.status-listening  { background: var(--accent); animation: dot-pulse 1.5s ease-in-out infinite; }
+.status-paused     { background: var(--coral); }
+.status-finished   { background: var(--mint); }
 
 @keyframes dot-pulse {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.1); }
+  0%, 100% { opacity: 0.6; transform: scale(1); box-shadow: 0 0 6px var(--accent); }
+  50% { opacity: 1; transform: scale(1.15); box-shadow: 0 0 14px var(--accent-glow); }
 }
 
 .app-main { flex: 1; }
@@ -192,24 +228,26 @@ body {
   align-items: center;
   gap: 7px;
   padding: 9px 16px;
-  border: 2px solid var(--hairline-warm);
+  border: 1px solid var(--glass-border);
   border-radius: 16px;
-  background: var(--light-wood);
-  color: var(--warm-gray);
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--text-secondary);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px var(--shadow-soft);
+  transition: all 0.35s ease;
+  box-shadow: var(--shadow-glass-sm);
 }
 
 .effect-btn:hover {
-  border-color: var(--walnut-light);
-  background: var(--light-wood-soft);
-  color: var(--dark-wood);
+  border-color: var(--glass-border-hover);
+  background: var(--glass-bg-hover);
+  color: var(--text-primary);
   transform: translateY(-1px);
-  box-shadow: 0 3px 10px var(--shadow-warm);
+  box-shadow: var(--shadow-glass);
 }
 
 .effect-icon { font-size: 16px; }
@@ -223,11 +261,13 @@ body {
   display: flex;
   gap: 6px;
   padding: 8px;
-  background: var(--paper);
-  border: 2px solid var(--hairline-warm);
+  background: rgba(18, 16, 42, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
   border-radius: 16px;
   z-index: 100;
-  box-shadow: 0 6px 24px var(--shadow-warm);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
 .effect-option {
@@ -236,28 +276,28 @@ body {
   align-items: center;
   gap: 3px;
   padding: 10px 14px;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   border-radius: 12px;
-  background: var(--light-wood-soft);
-  color: var(--warm-gray);
+  background: var(--glass-bg);
+  color: var(--text-secondary);
   font-size: 11px;
   font-weight: 500;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
   white-space: nowrap;
 }
 
 .effect-option.active {
-  border-color: var(--walnut);
-  background: var(--walnut);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(139, 111, 71, 0.3);
+  border-color: var(--glass-border-active);
+  background: rgba(126, 184, 218, 0.12);
+  color: var(--accent-glow);
+  box-shadow: var(--shadow-glow);
 }
 
 .effect-option:hover:not(.active) {
-  background: var(--light-wood);
-  color: var(--dark-wood);
+  background: var(--glass-bg-hover);
+  color: var(--text-primary);
   transform: translateY(-1px);
 }
 
@@ -266,7 +306,7 @@ body {
 /* === 面板标签 === */
 .panel-tabs {
   display: flex;
-  border-bottom: 2px solid var(--hairline-warm);
+  border-bottom: 1px solid var(--glass-border);
   margin-bottom: 14px;
   gap: 4px;
 }
@@ -276,57 +316,59 @@ body {
   padding: 11px 0;
   border: none;
   background: transparent;
-  color: var(--warm-gray-soft);
+  color: var(--text-tertiary);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   font-family: inherit;
   letter-spacing: 0.3px;
-  border-bottom: 3px solid transparent;
+  border-bottom: 2px solid transparent;
   transition: all 0.3s ease;
   -webkit-tap-highlight-color: transparent;
   border-radius: 8px 8px 0 0;
 }
 
-.panel-tab:nth-child(1).active,
-.panel-tab:nth-child(1):hover {
-  color: var(--walnut);
+.panel-tab:nth-child(1):hover,
+.panel-tab:nth-child(1).active {
+  color: var(--accent-glow);
 }
 .panel-tab:nth-child(1).active {
-  border-bottom-color: var(--walnut);
-  background: linear-gradient(to bottom, rgba(139, 111, 71, 0.05), transparent);
+  border-bottom-color: var(--accent);
+  background: linear-gradient(to bottom, rgba(126, 184, 218, 0.08), transparent);
 }
 
-.panel-tab:nth-child(2).active,
-.panel-tab:nth-child(2):hover {
-  color: var(--patina);
+.panel-tab:nth-child(2):hover,
+.panel-tab:nth-child(2).active {
+  color: var(--mint-glow);
 }
 .panel-tab:nth-child(2).active {
-  border-bottom-color: var(--patina);
-  background: linear-gradient(to bottom, rgba(122, 155, 118, 0.05), transparent);
+  border-bottom-color: var(--mint);
+  background: linear-gradient(to bottom, rgba(142, 200, 160, 0.08), transparent);
 }
 
-.panel-tab:nth-child(3).active,
-.panel-tab:nth-child(3):hover {
-  color: var(--amber);
+.panel-tab:nth-child(3):hover,
+.panel-tab:nth-child(3).active {
+  color: var(--coral-glow);
 }
 .panel-tab:nth-child(3).active {
-  border-bottom-color: var(--amber);
-  background: linear-gradient(to bottom, rgba(212, 135, 92, 0.05), transparent);
+  border-bottom-color: var(--coral);
+  background: linear-gradient(to bottom, rgba(232, 168, 124, 0.08), transparent);
 }
 
 .panel-content {
-  background: var(--light-wood);
-  border: 2px solid var(--hairline-warm);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
   border-radius: 16px;
   padding: 18px;
   max-height: 50vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  box-shadow: inset 0 1px 3px var(--shadow-soft), 0 2px 8px var(--shadow-soft);
+  box-shadow: var(--shadow-glass-sm);
 }
 
-/* ============ 平板适配 (≥600px) ============ */
+/* ============ 平板 (≥600px) ============ */
 @media (min-width: 600px) {
   .app {
     max-width: 600px;
@@ -335,7 +377,7 @@ body {
 
   .app-header h1 {
     font-size: 40px;
-    letter-spacing: 1.5px;
+    letter-spacing: 2.5px;
   }
 
   .header-status { font-size: 14px; }
@@ -364,7 +406,7 @@ body {
   }
 }
 
-/* ============ 桌面适配 (≥1024px) ============ */
+/* ============ 桌面 (≥1024px) ============ */
 @media (min-width: 1024px) {
   .app {
     max-width: 640px;
@@ -373,7 +415,7 @@ body {
 
   .app-header h1 {
     font-size: 52px;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     margin-bottom: 10px;
   }
 
@@ -398,7 +440,7 @@ body {
   .panel-content { padding: 26px; }
 }
 
-/* ============ 横屏手机适配 ============ */
+/* ============ 横屏手机 ============ */
 @media (max-width: 599px) and (orientation: landscape) {
   .app {
     max-width: 100%;
@@ -407,7 +449,7 @@ body {
 
   .app-header h1 {
     font-size: 24px;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
   }
 
   .app-main {
@@ -432,5 +474,5 @@ body {
 /* ============ 小屏手机 (<360px) ============ */
 @media (max-width: 359px) {
   .app { padding: 10px 8px 20px; }
-  .app-header h1 { font-size: 26px; letter-spacing: 0.8px; }
+  .app-header h1 { font-size: 26px; letter-spacing: 1px; }
 }

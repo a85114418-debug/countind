@@ -14,62 +14,67 @@
   font-weight: 500;
   cursor: pointer;
   letter-spacing: 0.3px;
-  transition: all 0.3s ease;
+  transition: all 0.35s ease;
   font-family: inherit;
   -webkit-tap-highlight-color: transparent;
   line-height: 1.2;
   height: 46px;
-  box-shadow: 0 3px 8px var(--shadow-warm), inset 0 1px 2px rgba(255,255,255,0.3);
   position: relative;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .ctrl-btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 4px var(--shadow-warm), inset 0 1px 3px rgba(0,0,0,0.1);
+  transform: translateY(1px);
 }
 
-/* 木质主按钮 */
+/* 主按钮 — 冰蓝玻璃 */
 .btn-start {
-  background: linear-gradient(to bottom, var(--walnut), var(--walnut-dark));
-  color: #fff;
-  border: 2px solid var(--walnut-dark);
+  background: rgba(126, 184, 218, 0.15);
+  color: var(--accent-glow);
+  border: 1px solid rgba(126, 184, 218, 0.3);
+  box-shadow: var(--shadow-glass-sm), var(--shadow-glow);
 }
 
 .btn-start:hover {
-  background: linear-gradient(to bottom, var(--walnut-light), var(--walnut));
+  background: rgba(126, 184, 218, 0.22);
+  border-color: rgba(126, 184, 218, 0.45);
   transform: translateY(-2px);
-  box-shadow: 0 5px 14px rgba(139, 111, 71, 0.4), inset 0 1px 2px rgba(255,255,255,0.3);
+  box-shadow: var(--shadow-glass), var(--shadow-glow-strong);
 }
 
-/* 次要按钮 — 浅木纹 */
+/* 次要按钮 — 透明玻璃 */
 .btn-pause {
-  background: linear-gradient(to bottom, var(--light-wood-soft), var(--light-wood));
-  color: var(--dark-wood);
-  border: 2px solid var(--hairline-warm);
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass-sm);
 }
 
 .btn-pause:hover {
-  background: linear-gradient(to bottom, #fff, var(--light-wood-soft));
-  border-color: var(--walnut-light);
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
   transform: translateY(-2px);
-  box-shadow: 0 5px 12px var(--shadow-warm), inset 0 1px 2px rgba(255,255,255,0.5);
+  box-shadow: var(--shadow-glass);
 }
 
 /* 文字按钮 — 重置 */
 .btn-reset {
   background: transparent;
-  color: var(--warm-gray);
-  border: 2px solid var(--hairline-warm);
+  color: var(--text-secondary);
+  border: 1px solid var(--glass-border);
   box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .btn-reset:hover {
-  color: var(--amber);
-  border-color: var(--amber);
-  background: rgba(212, 135, 92, 0.08);
-  box-shadow: 0 3px 10px rgba(212, 135, 92, 0.2);
+  color: var(--coral-glow);
+  border-color: rgba(232, 168, 124, 0.35);
+  background: rgba(232, 168, 124, 0.08);
+  box-shadow: 0 0 20px rgba(232, 168, 124, 0.15);
 }
 
 .btn-reset:active {
-  box-shadow: inset 0 2px 4px rgba(212, 135, 92, 0.2);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }

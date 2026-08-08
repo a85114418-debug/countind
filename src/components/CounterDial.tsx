@@ -7,11 +7,11 @@ interface Props {
   reverse?: boolean; // 逆时针进度（倒计时用）
 }
 
-/** 温暖手工渐变: 深棕 → 木质暖棕 → 琥珀橙 */
+/** 冰蓝玻璃渐变: 深蓝 → 冰蓝 → 浅蓝白 */
 const DIAL_GRADIENT = [
-  { offset: '0%', color: '#6B5437' },
-  { offset: '50%', color: '#8B6F47' },
-  { offset: '100%', color: '#D4875C' },
+  { offset: '0%', color: '#5A9AB8' },
+  { offset: '50%', color: '#7EB8DA' },
+  { offset: '100%', color: '#A0D2F0' },
 ];
 
 export function CounterDial({ count, target, isFlashing, reverse = false }: Props) {
@@ -36,7 +36,7 @@ export function CounterDial({ count, target, isFlashing, reverse = false }: Prop
         <circle
           cx="100" cy="100" r={r}
           fill="none"
-          stroke="var(--hairline-warm)"
+          stroke="rgba(255,255,255,0.08)"
           strokeWidth="6"
         />
         {/* 进度圆环 — 温暖手工渐变 */}

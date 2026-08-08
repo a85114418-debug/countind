@@ -4,14 +4,14 @@
 
 .hp-title {
   font-size: 14px;
-  color: var(--warm-gray);
+  color: var(--text-secondary);
   margin-bottom: 14px;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
 
 .history-empty {
-  color: var(--warm-gray-soft);
+  color: var(--text-tertiary);
   font-size: 14px;
   text-align: center;
   padding: 20px 0;
@@ -19,24 +19,25 @@
 
 .hp-row {
   border-radius: 14px;
-  background: linear-gradient(to bottom, var(--light-wood-soft), var(--light-wood));
-  border: 2px solid var(--hairline-warm);
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
   margin-bottom: 8px;
   font-size: 14px;
   padding: 12px 14px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px var(--shadow-soft);
+  transition: all 0.35s ease;
+  box-shadow: var(--shadow-glass-sm);
 }
 
 .hp-row:hover {
-  border-color: var(--walnut-light);
-  background: linear-gradient(to bottom, #fff, var(--light-wood-soft));
+  border-color: var(--glass-border-hover);
+  background: var(--glass-bg-hover);
   transform: translateY(-1px);
-  box-shadow: 0 3px 10px var(--shadow-warm);
+  box-shadow: var(--shadow-glass);
 }
 
-/* ---- 第一行：计数 + 信息 + 按钮 ---- */
-
+/* 第一行：计数 + 信息 + 按钮 */
 .hp-top {
   display: flex;
   align-items: center;
@@ -45,11 +46,11 @@
 
 .hp-count {
   font-weight: 600;
-  color: var(--walnut);
+  color: var(--accent-glow);
   font-size: 20px;
   min-width: 36px;
   line-height: 1.3;
-  text-shadow: 0 1px 2px var(--shadow-soft);
+  text-shadow: 0 0 12px rgba(126, 184, 218, 0.3);
 }
 
 .hp-meta {
@@ -61,18 +62,17 @@
 }
 
 .hp-detail {
-  color: var(--warm-gray);
+  color: var(--text-secondary);
   font-size: 12px;
   font-weight: 500;
 }
 
 .hp-time {
-  color: var(--warm-gray-soft);
+  color: var(--text-tertiary);
   font-size: 11px;
 }
 
-/* ---- 操作按钮 ---- */
-
+/* 操作按钮 */
 .hp-actions {
   display: flex;
   align-items: center;
@@ -83,10 +83,10 @@
 .hp-action-btn {
   width: 32px;
   height: 32px;
-  border: 2px solid var(--hairline-warm);
+  border: 1px solid var(--glass-border);
   border-radius: 10px;
-  background: var(--paper);
-  color: var(--warm-gray);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
   cursor: pointer;
   font-size: 17px;
   display: flex;
@@ -94,14 +94,14 @@
   justify-content: center;
   transition: all 0.3s ease;
   line-height: 1;
-  box-shadow: 0 2px 4px var(--shadow-soft);
+  box-shadow: var(--shadow-glass-sm);
 }
 
 .hp-action-btn:hover {
-  background: var(--light-wood-soft);
-  color: var(--dark-wood);
+  background: var(--glass-bg-hover);
+  color: var(--text-primary);
   transform: translateY(-1px);
-  box-shadow: 0 3px 8px var(--shadow-warm);
+  box-shadow: var(--shadow-glass);
 }
 
 .hp-note-btn {
@@ -109,42 +109,39 @@
 }
 
 .hp-note-btn:hover {
-  border-color: var(--patina);
-  color: var(--patina);
-  background: rgba(122, 155, 118, 0.1);
+  border-color: rgba(142, 200, 160, 0.35);
+  color: var(--mint-glow);
+  background: rgba(142, 200, 160, 0.1);
 }
 
 .hp-delete-btn:hover {
-  border-color: var(--amber);
-  color: var(--amber);
-  background: rgba(212, 135, 92, 0.1);
+  border-color: rgba(232, 168, 124, 0.35);
+  color: var(--coral-glow);
+  background: rgba(232, 168, 124, 0.1);
 }
 
-/* ---- 批注文本 ---- */
-
+/* 批注文本 */
 .hp-note {
   display: block;
   margin-top: 10px;
   padding: 8px 10px;
   font-size: 12px;
-  color: var(--warm-gray);
-  background: var(--paper);
-  border-left: 3px solid var(--patina);
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid var(--mint);
   border-radius: 0 10px 10px 0;
   cursor: pointer;
   line-height: 1.5;
   transition: all 0.3s ease;
-  box-shadow: inset 0 1px 2px var(--shadow-soft);
 }
 
 .hp-note:hover {
-  background: var(--light-wood-soft);
-  border-left-color: var(--walnut);
-  color: var(--dark-wood);
+  background: rgba(255, 255, 255, 0.06);
+  border-left-color: var(--accent);
+  color: var(--text-primary);
 }
 
-/* ---- 批注编辑区 ---- */
-
+/* 批注编辑区 */
 .hp-note-edit {
   margin-top: 10px;
 }
@@ -153,9 +150,9 @@
   width: 100%;
   padding: 8px 10px;
   font-size: 12px;
-  color: var(--dark-wood);
-  background: var(--paper);
-  border: 2px solid var(--hairline-warm);
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
   border-radius: 12px;
   resize: vertical;
   outline: none;
@@ -166,12 +163,12 @@
 }
 
 .hp-note-input:focus {
-  border-color: var(--walnut);
-  box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
+  border-color: var(--glass-border-active);
+  box-shadow: 0 0 0 3px rgba(126, 184, 218, 0.12);
 }
 
 .hp-note-input::placeholder {
-  color: var(--warm-gray-soft);
+  color: var(--text-tertiary);
 }
 
 .hp-note-actions {
@@ -189,30 +186,30 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 6px var(--shadow-soft);
 }
 
 .hp-note-save {
-  background: linear-gradient(to bottom, var(--walnut), var(--walnut-dark));
-  color: #fff;
-  border: 2px solid var(--walnut-dark);
+  background: rgba(126, 184, 218, 0.15);
+  color: var(--accent-glow);
+  border: 1px solid rgba(126, 184, 218, 0.3);
+  box-shadow: var(--shadow-glass-sm);
 }
 
 .hp-note-save:hover {
-  background: linear-gradient(to bottom, var(--walnut-light), var(--walnut));
+  background: rgba(126, 184, 218, 0.25);
   transform: translateY(-1px);
-  box-shadow: 0 3px 10px rgba(139, 111, 71, 0.4);
+  box-shadow: var(--shadow-glass);
 }
 
 .hp-note-cancel {
   background: transparent;
-  color: var(--warm-gray);
-  border: 2px solid var(--hairline-warm);
+  color: var(--text-secondary);
+  border: 1px solid var(--glass-border);
   box-shadow: none;
 }
 
 .hp-note-cancel:hover {
-  color: var(--dark-wood);
-  border-color: var(--walnut-light);
-  background: var(--light-wood-soft);
+  color: var(--text-primary);
+  border-color: var(--glass-border-hover);
+  background: var(--glass-bg);
 }

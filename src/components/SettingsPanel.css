@@ -4,7 +4,7 @@
 
 .sp-title {
   font-size: 14px;
-  color: var(--warm-gray);
+  color: var(--text-secondary);
   margin-bottom: 14px;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -16,16 +16,16 @@
   justify-content: space-between;
   margin-bottom: 12px;
   font-size: 14px;
-  color: var(--dark-wood);
+  color: var(--text-primary);
 }
 
 .sp-field input {
   width: 80px;
   padding: 9px 12px;
-  border: 2px solid var(--hairline-warm);
+  border: 1px solid var(--glass-border);
   border-radius: 12px;
-  background: var(--paper);
-  color: var(--dark-wood);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
   font-size: 14px;
   text-align: center;
   font-family: inherit;
@@ -35,22 +35,22 @@
 }
 
 .sp-field input:focus {
-  border-color: var(--walnut);
-  box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
+  border-color: var(--glass-border-active);
+  box-shadow: 0 0 0 3px rgba(126, 184, 218, 0.12);
 }
 
 .sp-field input:disabled {
-  opacity: 0.4;
+  opacity: 0.3;
 }
 
 .sp-baseline {
   font-size: 13px;
-  color: var(--warm-gray);
+  color: var(--text-secondary);
   margin: 10px 0;
 }
 
 .sp-baseline strong {
-  color: var(--walnut);
+  color: var(--accent-glow);
   font-weight: 600;
 }
 
@@ -58,24 +58,26 @@
   width: 100%;
   padding: 10px;
   margin-top: 8px;
-  border: 2px solid var(--hairline-warm);
+  border: 1px solid var(--glass-border);
   border-radius: 14px;
-  background: linear-gradient(to bottom, var(--light-wood-soft), var(--light-wood));
-  color: var(--warm-gray);
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--text-secondary);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px var(--shadow-soft);
+  transition: all 0.35s ease;
+  box-shadow: var(--shadow-glass-sm);
 }
 
 .sp-calibrate-btn:hover:not(:disabled) {
-  border-color: var(--walnut);
-  color: var(--walnut);
-  background: linear-gradient(to bottom, #fff, var(--light-wood-soft));
+  border-color: var(--glass-border-active);
+  color: var(--accent-glow);
+  background: rgba(126, 184, 218, 0.1);
   transform: translateY(-1px);
-  box-shadow: 0 3px 10px var(--shadow-warm);
+  box-shadow: var(--shadow-glass), var(--shadow-glow);
 }
 
 .sp-calibrate-btn:disabled {
@@ -83,14 +85,14 @@
   cursor: not-allowed;
 }
 
-/* === 倒计时设置专属样式 === */
+/* === 倒计时设置 === */
 .sp-select {
   width: 120px;
   padding: 8px 12px;
-  border: 2px solid var(--hairline-warm);
+  border: 1px solid var(--glass-border);
   border-radius: 12px;
-  background: var(--paper);
-  color: var(--dark-wood);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
   font-size: 14px;
   font-family: inherit;
   outline: none;
@@ -98,7 +100,7 @@
   transition: all 0.3s ease;
   -webkit-appearance: none;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23C4B5A0'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.4)'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   padding-right: 32px;
@@ -106,18 +108,18 @@
 }
 
 .sp-select:focus {
-  border-color: var(--walnut);
-  box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
+  border-color: var(--glass-border-active);
+  box-shadow: 0 0 0 3px rgba(126, 184, 218, 0.12);
 }
 
 .sp-select:disabled {
-  opacity: 0.4;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
 .sp-select option {
-  background: var(--paper);
-  color: var(--dark-wood);
+  background: #1a1835;
+  color: var(--text-primary);
 }
 
 .sp-slider {
@@ -126,7 +128,7 @@
   height: 6px;
   -webkit-appearance: none;
   appearance: none;
-  background: var(--hairline-warm);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
   outline: none;
   cursor: pointer;
@@ -137,20 +139,20 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: linear-gradient(to bottom, var(--walnut), var(--walnut-dark));
-  border: 3px solid var(--paper);
+  background: var(--accent);
+  border: 2px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  box-shadow: 0 2px 6px var(--shadow-warm);
+  box-shadow: 0 0 12px rgba(126, 184, 218, 0.4);
 }
 
 .sp-slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: linear-gradient(to bottom, var(--walnut), var(--walnut-dark));
-  border: 3px solid var(--paper);
+  background: var(--accent);
+  border: 2px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  box-shadow: 0 2px 6px var(--shadow-warm);
+  box-shadow: 0 0 12px rgba(126, 184, 218, 0.4);
 }
 
 .sp-slider:disabled {
@@ -160,13 +162,13 @@
 
 .sp-slider-val {
   font-size: 14px;
-  color: var(--warm-gray);
+  color: var(--text-secondary);
   min-width: 36px;
   text-align: right;
   font-weight: 500;
 }
 
-/* === 倒计数子模式切换标签 === */
+/* === 倒计数子模式切换 === */
 .sp-submode-tabs {
   display: flex;
   gap: 8px;
@@ -176,30 +178,32 @@
 .sp-submode-tab {
   flex: 1;
   padding: 9px 0;
-  border: 2px solid var(--hairline-warm);
+  border: 1px solid var(--glass-border);
   border-radius: 12px;
-  background: var(--light-wood-soft);
-  color: var(--warm-gray);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text-secondary);
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px var(--shadow-soft);
+  box-shadow: var(--shadow-glass-sm);
 }
 
 .sp-submode-tab:hover:not(:disabled) {
-  border-color: var(--walnut-light);
-  color: var(--dark-wood);
-  background: var(--light-wood);
+  border-color: var(--glass-border-hover);
+  color: var(--text-primary);
+  background: var(--glass-bg-hover);
   transform: translateY(-1px);
 }
 
 .sp-submode-tab.active {
-  border-color: var(--walnut);
-  background: var(--walnut);
-  color: #fff;
-  box-shadow: 0 3px 10px rgba(139, 111, 71, 0.3);
+  border-color: var(--glass-border-active);
+  background: rgba(126, 184, 218, 0.12);
+  color: var(--accent-glow);
+  box-shadow: var(--shadow-glass-sm), var(--shadow-glow);
 }
 
 .sp-submode-tab:disabled {
@@ -210,7 +214,7 @@
 /* === 小节标签 === */
 .sp-section-label {
   font-size: 12px;
-  color: var(--warm-gray-soft);
+  color: var(--text-tertiary);
   margin-bottom: 8px;
   letter-spacing: 0.5px;
   font-weight: 600;
@@ -227,10 +231,12 @@
 .sp-totalmode-tab {
   flex: 1;
   padding: 7px 0;
-  border: 2px solid var(--hairline-warm);
+  border: 1px solid var(--glass-border);
   border-radius: 10px;
-  background: var(--light-wood-soft);
-  color: var(--warm-gray);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text-secondary);
   font-size: 12px;
   font-weight: 500;
   font-family: inherit;
@@ -239,16 +245,16 @@
 }
 
 .sp-totalmode-tab:hover:not(:disabled) {
-  border-color: var(--walnut-light);
-  color: var(--dark-wood);
-  background: var(--light-wood);
+  border-color: var(--glass-border-hover);
+  color: var(--text-primary);
+  background: var(--glass-bg-hover);
 }
 
 .sp-totalmode-tab.active {
-  border-color: var(--walnut);
-  background: var(--walnut);
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(139, 111, 71, 0.25);
+  border-color: var(--glass-border-active);
+  background: rgba(126, 184, 218, 0.12);
+  color: var(--accent-glow);
+  box-shadow: var(--shadow-glow);
 }
 
 .sp-totalmode-tab:disabled {
@@ -266,10 +272,10 @@
 .sp-range-row input {
   width: 68px !important;
   padding: 8px 10px !important;
-  border: 2px solid var(--hairline-warm) !important;
+  border: 1px solid var(--glass-border) !important;
   border-radius: 12px !important;
-  background: var(--paper) !important;
-  color: var(--dark-wood) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: var(--text-primary) !important;
   font-size: 14px !important;
   text-align: center !important;
   font-family: inherit !important;
@@ -279,8 +285,8 @@
 }
 
 .sp-range-row input:focus {
-  border-color: var(--walnut) !important;
-  box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1) !important;
+  border-color: var(--glass-border-active) !important;
+  box-shadow: 0 0 0 3px rgba(126, 184, 218, 0.12) !important;
 }
 
 .sp-range-row input:disabled {
@@ -288,7 +294,7 @@
 }
 
 .sp-range-sep {
-  color: var(--warm-gray);
+  color: var(--text-secondary);
   font-size: 14px;
   font-weight: 500;
 }
